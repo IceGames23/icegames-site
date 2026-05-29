@@ -33,6 +33,7 @@ src/
     Navbar.astro
     LanguageSwitcher.tsx       # React island
     MobileNav.tsx              # React island
+    Snowstorm.tsx              # React island: first-visit blizzard preloader
     Hero.astro
     About.astro
     Services.astro
@@ -121,7 +122,7 @@ export default {
     extend: {
       colors: {
         ice: {
-          50: '#f5fbff',
+          50: '#f7fbfe',
           100: '#eaf4fb',
           200: '#d4e9f7',
           300: '#9fc6e0',
@@ -129,19 +130,25 @@ export default {
           500: '#2f9fd6',
           600: '#1c6fb0',
           700: '#155488',
-          ink: '#0f2438',
+          cyan: '#38bdf8', // electric accent — the "gamer edge" highlight
+          ink: '#0a1a2b',
         },
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        display: ['"Space Grotesk"', 'Inter', 'sans-serif'],
+        // Distinctive, self-hostable via @fontsource. Avoids generic Inter/Space Grotesk.
+        sans: ['"Hanken Grotesk"', 'system-ui', 'sans-serif'],
+        display: ['"Bricolage Grotesque"', '"Hanken Grotesk"', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
       },
       boxShadow: {
         frost: '0 10px 30px rgba(60,130,180,0.12)',
+        glow: '0 0 0 1px rgba(56,189,248,0.4), 0 8px 30px rgba(56,189,248,0.18)',
       },
       backgroundImage: {
-        'frost-gradient': 'linear-gradient(160deg,#ffffff 0%,#eaf4fb 60%,#d4e9f7 100%)',
-        'ice-accent': 'linear-gradient(135deg,#2f9fd6,#1c6fb0)',
+        'frost-gradient': 'linear-gradient(160deg,#f7fbfe 0%,#eaf4fb 55%,#d8ebf8 100%)',
+        'ice-accent': 'linear-gradient(135deg,#38bdf8,#1c6fb0)',
+        'frost-mesh':
+          'radial-gradient(60% 50% at 15% 0%, rgba(56,189,248,0.18), transparent 60%), radial-gradient(50% 50% at 90% 10%, rgba(125,211,252,0.16), transparent 60%)',
       },
     },
   },
@@ -154,9 +161,12 @@ export default {
 `src/styles/global.css`:
 
 ```css
-@import '@fontsource/inter/400.css';
-@import '@fontsource/inter/600.css';
-@import '@fontsource/space-grotesk/700.css';
+@import '@fontsource/hanken-grotesk/400.css';
+@import '@fontsource/hanken-grotesk/500.css';
+@import '@fontsource/hanken-grotesk/600.css';
+@import '@fontsource-variable/bricolage-grotesque';
+@import '@fontsource/jetbrains-mono/400.css';
+@import '@fontsource/jetbrains-mono/500.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -164,23 +174,43 @@ export default {
 @layer base {
   html { scroll-behavior: smooth; }
   body {
-    @apply bg-frost-gradient text-ice-ink font-sans antialiased min-h-screen;
+    @apply text-ice-ink font-sans antialiased min-h-screen;
+    /* layered atmosphere: cool gradient + frost-mesh glows */
+    background-color: #f7fbfe;
+    background-image: theme('backgroundImage.frost-mesh'), theme('backgroundImage.frost-gradient');
+    background-attachment: fixed;
   }
   h1, h2, h3 { @apply font-display; }
+  /* subtle grain overlay for texture (no extra asset) */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  main, header, footer { position: relative; z-index: 1; }
 }
 
 @layer components {
-  .btn-primary { @apply inline-flex items-center gap-2 rounded-lg bg-ice-accent px-5 py-2.5 text-white font-semibold shadow-frost transition hover:brightness-110; }
-  .btn-ghost { @apply inline-flex items-center gap-2 rounded-lg border border-ice-300 px-5 py-2.5 text-ice-600 font-semibold transition hover:bg-ice-100; }
-  .card-frost { @apply rounded-xl bg-white/80 border border-ice-200 shadow-frost backdrop-blur-sm; }
-  .section { @apply mx-auto max-w-6xl px-6 py-20; }
+  .btn-primary { @apply inline-flex items-center gap-2 rounded-lg bg-ice-accent px-5 py-2.5 text-white font-semibold shadow-frost transition hover:shadow-glow hover:brightness-105; }
+  .btn-ghost { @apply inline-flex items-center gap-2 rounded-lg border border-ice-300 px-5 py-2.5 text-ice-600 font-semibold transition hover:border-ice-cyan hover:bg-ice-100; }
+  .card-frost { @apply rounded-xl border border-ice-200 bg-white/70 shadow-frost backdrop-blur-md transition; }
+  .card-frost:hover { @apply -translate-y-1 border-ice-cyan/50 shadow-glow; }
+  .section { @apply mx-auto max-w-6xl px-6 py-24; }
+  /* mono section label — small, uppercase, tracked */
+  .label { @apply font-mono text-xs uppercase tracking-[0.25em] text-ice-500; }
+  /* mono tech tag */
+  .tag { @apply font-mono rounded bg-ice-100 px-2 py-0.5 text-xs text-ice-600; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
 ```
 
 - [ ] **Step 3: Install fonts**
 
 ```bash
-npm install @fontsource/inter @fontsource/space-grotesk
+npm install @fontsource/hanken-grotesk @fontsource-variable/bricolage-grotesque @fontsource/jetbrains-mono
 ```
 
 - [ ] **Step 4: Import global.css globally**
@@ -717,16 +747,35 @@ const t = useTranslations(lang);
 const tagline = lang === 'pt'
   ? 'Construo servidores Minecraft e software com IA. Do AfterLands a projetos internacionais.'
   : 'I build Minecraft servers and AI software. From AfterLands to international projects.';
+const stat = lang === 'pt' ? 'Fundador & CEO' : 'Founder & CEO';
 ---
-<section class="section pt-28 text-center">
-  <p class="text-xs uppercase tracking-[0.2em] text-ice-500">{t('hero.role')}</p>
-  <h1 class="mt-4 text-5xl font-bold md:text-6xl">{site.author} — <span class="bg-ice-accent bg-clip-text text-transparent">{site.name}</span></h1>
-  <p class="mx-auto mt-6 max-w-xl text-ice-700">{tagline}</p>
-  <div class="mt-8 flex justify-center gap-4">
-    <a href="#projects" class="btn-primary">{t('hero.cta.projects')}</a>
-    <a href="#contact" class="btn-ghost">{t('hero.cta.contact')}</a>
+<!-- Asymmetric hero: name block left, floating glass stat card right. Staggered load reveal. -->
+<section class="section grid items-center gap-10 pt-32 md:grid-cols-[1.4fr_1fr] hero-stagger">
+  <div>
+    <p class="label" style="--d:0">{t('hero.role')}</p>
+    <h1 class="mt-4 text-5xl font-bold leading-[0.95] md:text-7xl" style="--d:1">
+      {site.author}<br /><span class="bg-ice-accent bg-clip-text text-transparent">{site.name}</span>
+    </h1>
+    <p class="mt-6 max-w-xl text-lg text-ice-700" style="--d:2">{tagline}</p>
+    <div class="mt-8 flex gap-4" style="--d:3">
+      <a href="#projects" class="btn-primary">{t('hero.cta.projects')}</a>
+      <a href="#contact" class="btn-ghost">{t('hero.cta.contact')}</a>
+    </div>
   </div>
+  <aside class="card-frost p-6 md:justify-self-end md:rotate-1" style="--d:2">
+    <div class="text-4xl">❄</div>
+    <p class="mt-3 font-display text-2xl font-bold">AfterLands</p>
+    <p class="label mt-1">{stat}</p>
+    <div class="mt-4 flex flex-wrap gap-2">
+      <span class="tag">Minecraft</span><span class="tag">RankUP</span><span class="tag">MMORPG</span><span class="tag">Java</span>
+    </div>
+  </aside>
 </section>
+
+<style>
+  .hero-stagger [style*='--d'] { opacity: 0; transform: translateY(14px); animation: rise 0.7s cubic-bezier(.2,.7,.2,1) forwards; animation-delay: calc(var(--d) * 110ms); }
+  @keyframes rise { to { opacity: 1; transform: none; } }
+</style>
 ```
 
 - [ ] **Step 3: Verify build**
@@ -742,6 +791,101 @@ Expected: build succeeds.
 ```bash
 git add -A
 git commit -m "feat: add scroll-reveal island and hero section"
+```
+
+---
+
+## Task 8b: Snowstorm preloader (signature ice intro)
+
+**Files:**
+- Create: `src/components/Snowstorm.tsx`
+
+A lightweight canvas blizzard that overlays the page on first visit of a session,
+then fades out to reveal the hero. Decorative only — the page HTML renders beneath it,
+so crawlers and no-JS users see full content. Respects `prefers-reduced-motion`.
+
+- [ ] **Step 1: Implement the preloader island**
+
+`src/components/Snowstorm.tsx`:
+
+```tsx
+import { useEffect, useRef, useState } from 'react';
+
+export default function Snowstorm() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [done, setDone] = useState(false);
+
+  useEffect(() => {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const seen = sessionStorage.getItem('ice-intro') === '1';
+    if (reduce || seen) { setDone(true); return; }
+    sessionStorage.setItem('ice-intro', '1');
+
+    const canvas = canvasRef.current!;
+    const ctx = canvas.getContext('2d')!;
+    let w = (canvas.width = window.innerWidth);
+    let h = (canvas.height = window.innerHeight);
+    const onResize = () => { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; };
+    window.addEventListener('resize', onResize);
+
+    const flakes = Array.from({ length: 220 }, () => ({
+      x: Math.random() * w, y: Math.random() * h,
+      r: Math.random() * 2.6 + 0.6, s: Math.random() * 2 + 1.5, drift: Math.random() * 1.5 + 0.8,
+    }));
+
+    let raf = 0;
+    const draw = () => {
+      ctx.clearRect(0, 0, w, h);
+      ctx.fillStyle = 'rgba(255,255,255,0.9)';
+      for (const f of flakes) {
+        ctx.beginPath(); ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2); ctx.fill();
+        f.y += f.s; f.x += f.drift; // diagonal "blown" snow
+        if (f.y > h) { f.y = -5; f.x = Math.random() * w; }
+        if (f.x > w) f.x = -5;
+      }
+      raf = requestAnimationFrame(draw);
+    };
+    draw();
+
+    const timer = window.setTimeout(() => setDone(true), 1200);
+    return () => { cancelAnimationFrame(raf); window.clearTimeout(timer); window.removeEventListener('resize', onResize); };
+  }, []);
+
+  if (done) return null;
+  return (
+    <div
+      class="snow-overlay"
+      onAnimationEnd={(e) => { if (e.animationName === 'snowOut') setDone(true); }}
+    >
+      <canvas ref={canvasRef} class="block h-full w-full" />
+      <span class="snow-mark">❄ IceGames</span>
+      <style>{`
+        .snow-overlay { position: fixed; inset: 0; z-index: 100; background:
+          radial-gradient(60% 60% at 50% 40%, #ffffff, #dcebf8 60%, #c6def2);
+          animation: snowOut 0.6s ease 1.2s forwards; }
+        .snow-mark { position: absolute; inset: 0; display: grid; place-items: center;
+          font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: clamp(1.5rem, 6vw, 3rem);
+          color: #0a1a2b; letter-spacing: 0.02em; }
+        @keyframes snowOut { to { opacity: 0; visibility: hidden; } }
+      `}</style>
+    </div>
+  );
+}
+```
+
+- [ ] **Step 2: Verify build**
+
+```bash
+npm run build
+```
+
+Expected: build succeeds. (Wired into the home page in Task 15.)
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add -A
+git commit -m "feat: add snowstorm preloader intro"
 ```
 
 ---
@@ -877,7 +1021,7 @@ const { lang, slug, title, summary, tech } = Astro.props as {
   <h3 class="text-lg font-semibold">{title}</h3>
   <p class="mt-2 text-sm text-ice-700">{summary}</p>
   <div class="mt-4 flex flex-wrap gap-2">
-    {tech.map((ttag) => <span class="rounded bg-ice-100 px-2 py-0.5 text-xs text-ice-600">{ttag}</span>)}
+    {tech.map((ttag) => <span class="tag">{ttag}</span>)}
   </div>
 </a>
 ```
@@ -1090,6 +1234,7 @@ Expected: build succeeds.
 ```astro
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Snowstorm from '../../components/Snowstorm.tsx';
 import Navbar from '../../components/Navbar.astro';
 import Hero from '../../components/Hero.astro';
 import About from '../../components/About.astro';
@@ -1111,6 +1256,7 @@ const description = lang === 'pt'
   : 'Portfolio of Vitor Albert (IceGames): Minecraft servers, Java development and AI software.';
 ---
 <BaseLayout lang={lang} title={title} description={description}>
+  <Snowstorm client:only="react" />
   <Navbar lang={lang} path="" />
   <main>
     <Hero lang={lang} />
@@ -1197,7 +1343,7 @@ const backLabel = lang === 'pt' ? '← Voltar' : '← Back';
     <h1 class="mt-4 text-4xl font-bold">{entry.data.title[lang]}</h1>
     <p class="mt-2 text-ice-700">{entry.data.role[lang]}</p>
     <div class="mt-4 flex flex-wrap gap-2">
-      {entry.data.tech.map((tag) => <span class="rounded bg-ice-100 px-2 py-0.5 text-xs text-ice-600">{tag}</span>)}
+      {entry.data.tech.map((tag) => <span class="tag">{tag}</span>)}
     </div>
     <article class="prose mt-8 max-w-none text-ice-700"><Content /></article>
     <div class="mt-6 flex flex-wrap gap-4">

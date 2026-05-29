@@ -43,8 +43,27 @@ AI/software work.
 - Clean typography, generous spacing, soft shadows with a cool tint.
 - "Gamer edge" via: subtle scroll/reveal animations, frosty hover states on cards,
   a snowflake/ice motif in the logo (`❄ ICEGAMES`), and tasteful microinteractions.
-- Final colors, fonts, and spacing tokens are decided during implementation with the
-  `frontend-design` plugin; this spec fixes the direction, not exact pixel values.
+
+**Frontend-design refinements (added after design review):**
+
+- **Typography (distinctive, self-hosted):** display = *Bricolage Grotesque*; body =
+  *Hanken Grotesk*; mono accent = *JetBrains Mono* for section labels, the role tagline,
+  and tech tags (dev/gamer credibility). Deliberately avoids generic Inter/Space Grotesk.
+- **Atmosphere:** layered cool gradient + frost-mesh radial glows + a faint grain overlay
+  instead of flat white; frosted-glass cards (`backdrop-blur`).
+- **Accent:** an electric cyan (`#38bdf8`) used sparingly alongside the ice blue for the
+  "gamer edge" highlight (hover glow, gradient text).
+- **Composition:** asymmetric hero — large name block left, floating glass stat card
+  (AfterLands / Founder & CEO) right; mono kicker labels above section headings.
+- **Motion:** one orchestrated page-load with staggered reveal in the hero; frost hover
+  (cyan glow + lift) on cards. All motion respects `prefers-reduced-motion`.
+- **Snowstorm preloader:** a signature first-visit intro — a lightweight canvas blizzard
+  overlay that fades out to reveal the hero. Shows once per session (`sessionStorage`),
+  is purely decorative (full HTML renders beneath, so SEO/no-JS unaffected), and is
+  skipped entirely under `prefers-reduced-motion`.
+
+Final exact spacing/token values are settled during implementation; this spec fixes the
+direction and the key creative decisions above.
 
 ## Information Architecture
 
