@@ -65,6 +65,20 @@ AI/software work.
 Final exact spacing/token values are settled during implementation; this spec fixes the
 direction and the key creative decisions above.
 
+**Accessibility & quality bar (from UI/UX review):**
+
+- **Icons:** SVG only (Lucide via `astro-icon`) — no emoji as structural icons. One icon
+  family, consistent sizing token.
+- **Contrast:** body/label text meets WCAG AA (≥4.5:1); small labels use `ice-600`, not the
+  lighter `ice-500`. Electric cyan is used for borders/glow/large text, never small body text.
+- **Focus:** visible `focus-visible` ring on every interactive element (keyboard nav).
+- **Touch targets:** ≥44px for nav, language switcher, and CTAs.
+- **Projects are visuals-first:** image-first cards with `<Image>` (WebP, declared
+  dimensions to avoid CLS, lazy below the fold) and a hover "view project" affordance.
+- **Motion:** `prefers-reduced-motion` respected globally; entrance easing ease-out,
+  durations 150–400ms.
+- Project **category filtering** is deferred until the project count justifies it.
+
 ## Information Architecture
 
 Single-page home composed of stacked sections, plus per-project detail pages.

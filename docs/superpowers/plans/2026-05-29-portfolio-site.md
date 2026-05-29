@@ -80,10 +80,11 @@ Expected: Astro scaffolds `package.json`, `astro.config.mjs`, `tsconfig.json`, `
 ```bash
 npx astro add tailwind react sitemap --yes
 npm install
+npm install astro-icon @iconify-json/lucide
 npm install -D vitest
 ```
 
-Expected: Tailwind, React, and sitemap integrations installed and wired into `astro.config.mjs`; `npm install` completes without errors.
+Expected: Tailwind, React, and sitemap integrations installed and wired into `astro.config.mjs`; `astro-icon` (SVG icon component, no client JS) + the Lucide icon set installed; `npm install` completes without errors.
 
 - [ ] **Step 3: Verify the dev toolchain runs**
 
@@ -190,16 +191,26 @@ export default {
   main, header, footer { position: relative; z-index: 1; }
 }
 
+@layer base {
+  /* visible keyboard focus on all interactive elements (WCAG) */
+  a, button, [tabindex] { @apply outline-none; }
+  a:focus-visible, button:focus-visible, [tabindex]:focus-visible {
+    @apply rounded ring-2 ring-ice-600 ring-offset-2 ring-offset-ice-50;
+  }
+}
+
 @layer components {
-  .btn-primary { @apply inline-flex items-center gap-2 rounded-lg bg-ice-accent px-5 py-2.5 text-white font-semibold shadow-frost transition hover:shadow-glow hover:brightness-105; }
-  .btn-ghost { @apply inline-flex items-center gap-2 rounded-lg border border-ice-300 px-5 py-2.5 text-ice-600 font-semibold transition hover:border-ice-cyan hover:bg-ice-100; }
+  .btn-primary { @apply inline-flex min-h-[44px] items-center gap-2 rounded-lg bg-ice-accent px-5 py-2.5 text-white font-semibold shadow-frost transition hover:shadow-glow hover:brightness-105; }
+  .btn-ghost { @apply inline-flex min-h-[44px] items-center gap-2 rounded-lg border border-ice-300 px-5 py-2.5 text-ice-600 font-semibold transition hover:border-ice-cyan hover:bg-ice-100; }
   .card-frost { @apply rounded-xl border border-ice-200 bg-white/70 shadow-frost backdrop-blur-md transition; }
   .card-frost:hover { @apply -translate-y-1 border-ice-cyan/50 shadow-glow; }
   .section { @apply mx-auto max-w-6xl px-6 py-24; }
-  /* mono section label — small, uppercase, tracked */
-  .label { @apply font-mono text-xs uppercase tracking-[0.25em] text-ice-500; }
+  /* mono section label — small, uppercase, tracked. ice-600 keeps AA contrast (~5.3:1) */
+  .label { @apply font-mono text-xs uppercase tracking-[0.25em] text-ice-600; }
   /* mono tech tag */
-  .tag { @apply font-mono rounded bg-ice-100 px-2 py-0.5 text-xs text-ice-600; }
+  .tag { @apply font-mono rounded bg-ice-100 px-2 py-0.5 text-xs text-ice-700; }
+  /* consistent icon sizing token */
+  .icon { @apply h-6 w-6; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -246,10 +257,11 @@ import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
 import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
+import icon from 'astro-icon';
 
 export default defineConfig({
   site: 'https://icegames.dev', // placeholder; update when domain is chosen
-  integrations: [tailwind(), react(), sitemap()],
+  integrations: [tailwind(), react(), sitemap(), icon()],
   i18n: {
     defaultLocale: 'pt',
     locales: ['pt', 'en'],
@@ -621,7 +633,8 @@ export default function LanguageSwitcher({ lang, path }: Props) {
   return (
     <a
       href={`/${other}/${path}`}
-      class="rounded-full border border-ice-300 px-3 py-1 text-sm text-ice-600 transition hover:bg-ice-100"
+      aria-label={lang === 'pt' ? 'Switch to English' : 'Mudar para Português'}
+      class="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-ice-300 px-3 text-sm font-medium text-ice-600 transition hover:bg-ice-100"
     >
       {lang === 'pt' ? 'EN' : 'PT'}
     </a>
@@ -659,6 +672,7 @@ export default function MobileNav({ items }: { items: Item[] }) {
 
 ```astro
 ---
+import { Icon } from 'astro-icon/components';
 import { useTranslations, type Lang } from '../i18n/utils';
 import { site } from '../data/site';
 import LanguageSwitcher from './LanguageSwitcher.tsx';
@@ -676,7 +690,7 @@ const items = [
 ---
 <header class="sticky top-0 z-50 border-b border-ice-200 bg-white/70 backdrop-blur">
   <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-    <a href={`/${lang}/`} class="font-display text-lg font-bold text-ice-ink">❄ {site.name}</a>
+    <a href={`/${lang}/`} class="inline-flex items-center gap-2 font-display text-lg font-bold text-ice-ink"><Icon name="lucide:snowflake" class="h-5 w-5 text-ice-600" /> {site.name}</a>
     <nav class="hidden gap-6 text-sm text-ice-700 md:flex">
       {items.map((it) => <a href={it.href} class="transition hover:text-ice-600">{it.label}</a>)}
     </nav>
@@ -740,6 +754,7 @@ export default function Reveal({ children }: { children: ReactNode }) {
 
 ```astro
 ---
+import { Icon } from 'astro-icon/components';
 import { useTranslations, type Lang } from '../i18n/utils';
 import { site } from '../data/site';
 const { lang } = Astro.props as { lang: Lang };
@@ -763,7 +778,7 @@ const stat = lang === 'pt' ? 'Fundador & CEO' : 'Founder & CEO';
     </div>
   </div>
   <aside class="card-frost p-6 md:justify-self-end md:rotate-1" style="--d:2">
-    <div class="text-4xl">❄</div>
+    <Icon name="lucide:snowflake" class="h-9 w-9 text-ice-cyan" />
     <p class="mt-3 font-display text-2xl font-bold">AfterLands</p>
     <p class="label mt-1">{stat}</p>
     <div class="mt-4 flex flex-wrap gap-2">
@@ -945,11 +960,12 @@ git commit -m "feat: add about section"
 
 ```astro
 ---
+import { Icon } from 'astro-icon/components';
 const { icon, title, desc } = Astro.props as { icon: string; title: string; desc: string };
 ---
-<div class="card-frost p-6 transition hover:-translate-y-1 hover:shadow-lg">
-  <div class="text-3xl">{icon}</div>
-  <h3 class="mt-3 text-lg font-semibold">{title}</h3>
+<div class="card-frost p-6">
+  <span class="inline-flex rounded-lg bg-ice-100 p-3 text-ice-600"><Icon name={icon} class="icon" /></span>
+  <h3 class="mt-4 text-lg font-semibold">{title}</h3>
   <p class="mt-2 text-sm text-ice-700">{desc}</p>
 </div>
 ```
@@ -966,14 +982,14 @@ const { lang } = Astro.props as { lang: Lang };
 const heading = lang === 'pt' ? 'Serviços' : 'Services';
 const services = lang === 'pt'
   ? [
-      { icon: '🎮', title: 'Servidores Minecraft', desc: 'RankUP, MMORPG e plugins Java sob medida.' },
-      { icon: '⚙️', title: 'Dev Java / Backend', desc: 'Sistemas e projetos para clientes internacionais.' },
-      { icon: '🤖', title: 'Software com IA', desc: 'Automação e aceleração de processos para empresas.' },
+      { icon: 'lucide:gamepad-2', title: 'Servidores Minecraft', desc: 'RankUP, MMORPG e plugins Java sob medida.' },
+      { icon: 'lucide:server-cog', title: 'Dev Java / Backend', desc: 'Sistemas e projetos para clientes internacionais.' },
+      { icon: 'lucide:bot', title: 'Software com IA', desc: 'Automação e aceleração de processos para empresas.' },
     ]
   : [
-      { icon: '🎮', title: 'Minecraft Servers', desc: 'RankUP, MMORPG and custom Java plugins.' },
-      { icon: '⚙️', title: 'Java / Backend Dev', desc: 'Systems and projects for international clients.' },
-      { icon: '🤖', title: 'AI Software', desc: 'Process automation and acceleration for companies.' },
+      { icon: 'lucide:gamepad-2', title: 'Minecraft Servers', desc: 'RankUP, MMORPG and custom Java plugins.' },
+      { icon: 'lucide:server-cog', title: 'Java / Backend Dev', desc: 'Systems and projects for international clients.' },
+      { icon: 'lucide:bot', title: 'AI Software', desc: 'Process automation and acceleration for companies.' },
     ];
 ---
 <section id="services" class="section">
@@ -1012,16 +1028,30 @@ git commit -m "feat: add services section"
 
 ```astro
 ---
+import { Image } from 'astro:assets';
+import { Icon } from 'astro-icon/components';
 import type { Lang } from '../i18n/ui';
-const { lang, slug, title, summary, tech } = Astro.props as {
-  lang: Lang; slug: string; title: string; summary: string; tech: string[];
+import type { ImageMetadata } from 'astro';
+const { lang, slug, title, summary, tech, cover } = Astro.props as {
+  lang: Lang; slug: string; title: string; summary: string; tech: string[]; cover?: ImageMetadata;
 };
+const viewLabel = lang === 'pt' ? 'Ver projeto' : 'View project';
 ---
-<a href={`/${lang}/projetos/${slug}`} class="card-frost block p-6 transition hover:-translate-y-1 hover:shadow-lg">
-  <h3 class="text-lg font-semibold">{title}</h3>
-  <p class="mt-2 text-sm text-ice-700">{summary}</p>
-  <div class="mt-4 flex flex-wrap gap-2">
-    {tech.map((ttag) => <span class="tag">{ttag}</span>)}
+<a href={`/${lang}/projetos/${slug}`} class="card-frost group block overflow-hidden">
+  <div class="relative aspect-video overflow-hidden bg-ice-100">
+    {cover
+      ? <Image src={cover} alt={title} loading="lazy" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+      : <div class="flex h-full w-full items-center justify-center text-ice-300"><Icon name="lucide:image" class="icon" /></div>}
+  </div>
+  <div class="p-6">
+    <h3 class="text-lg font-semibold">{title}</h3>
+    <p class="mt-2 text-sm text-ice-700">{summary}</p>
+    <div class="mt-4 flex flex-wrap gap-2">
+      {tech.map((ttag) => <span class="tag">{ttag}</span>)}
+    </div>
+    <span class="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-ice-600 opacity-0 transition group-hover:opacity-100">
+      {viewLabel} <Icon name="lucide:arrow-right" class="h-4 w-4" />
+    </span>
   </div>
 </a>
 ```
@@ -1044,7 +1074,7 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.order -
   <h2 class="text-3xl font-bold">{heading}</h2>
   <div class="mt-8 grid gap-6 md:grid-cols-3">
     {projects.map((p) => (
-      <ProjectCard lang={lang} slug={p.id} title={p.data.title[lang]} summary={p.data.summary[lang]} tech={p.data.tech} />
+      <ProjectCard lang={lang} slug={p.id} title={p.data.title[lang]} summary={p.data.summary[lang]} tech={p.data.tech} cover={p.data.cover} />
     ))}
   </div>
 </section>
@@ -1168,23 +1198,26 @@ Expected: build succeeds and renders the sample testimonial.
 
 ```astro
 ---
+import { Icon } from 'astro-icon/components';
 import { useTranslations, type Lang } from '../i18n/utils';
 import { site } from '../data/site';
 const { lang } = Astro.props as { lang: Lang };
 const t = useTranslations(lang);
 const sub = lang === 'pt' ? 'Me chame pelos canais abaixo.' : 'Reach me through the channels below.';
 const links = [
-  { label: 'Email', url: site.links.email },
-  { label: 'GitHub', url: site.links.github },
-  { label: 'LinkedIn', url: site.links.linkedin },
-  { label: 'Discord', url: site.links.discord },
+  { label: 'Email', url: site.links.email, icon: 'lucide:mail' },
+  { label: 'GitHub', url: site.links.github, icon: 'lucide:github' },
+  { label: 'LinkedIn', url: site.links.linkedin, icon: 'lucide:linkedin' },
+  { label: 'Discord', url: site.links.discord, icon: 'lucide:message-circle' },
 ];
 ---
 <section id="contact" class="section text-center">
   <h2 class="text-3xl font-bold">{t('contact.heading')}</h2>
   <p class="mt-3 text-ice-700">{sub}</p>
   <div class="mt-8 flex flex-wrap justify-center gap-4">
-    {links.map((l) => <a href={l.url} class="btn-ghost">{l.label}</a>)}
+    {links.map((l) => (
+      <a href={l.url} aria-label={l.label} class="btn-ghost"><Icon name={l.icon} class="h-5 w-5" /> {l.label}</a>
+    ))}
   </div>
 </section>
 ```
@@ -1456,6 +1489,8 @@ git commit -m "chore: final verification fixes"
 - Real bio/services/project copy and additional projects/testimonials (just add content files).
 - English Markdown bodies for project detail pages (currently bodies are PT-first).
 - Real avatar, project cover images, and og-image.
+- **Category filtering** on the projects grid — deferred (YAGNI with few projects). Add a
+  `category` field to the project schema and client-side filter chips when the list grows.
 
 ## Self-Review
 
