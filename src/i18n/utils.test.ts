@@ -16,7 +16,6 @@ describe('useTranslations', () => {
     expect(t('hero.cta.contact')).toBe('Hire me');
   });
   it('falls back to default language when key missing in target', () => {
-    // @ts-expect-error simulate a partial dict at runtime
     const t = useTranslations('en');
     expect(t('nav.about')).toBe('About');
   });
