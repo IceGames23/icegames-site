@@ -34,7 +34,7 @@ src/
     LanguageSwitcher.tsx       # React island
     MobileNav.tsx              # React island
     Snowstorm.tsx              # React island: first-visit blizzard preloader
-    Hero.astro
+    Hero.astro                 # CSS-only staggered load (no JS island)
     About.astro
     Services.astro
     ServiceCard.astro
@@ -45,7 +45,6 @@ src/
     TestimonialCard.astro
     ContactLinks.astro
     Footer.astro
-    Reveal.tsx                 # React island: scroll-reveal wrapper
   pages/
     index.astro                # redirect "/" -> "/pt/"
     [lang]/index.astro         # home, composes all sections
@@ -637,13 +636,15 @@ export default function LanguageSwitcher({ lang, path }: Props) {
     <a
       href={`/${other}/${path}`}
       aria-label={lang === 'pt' ? 'Switch to English' : 'Mudar para Português'}
-      class="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-ice-300 px-3 text-sm font-medium text-ice-600 transition hover:bg-ice-100"
+      className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-ice-300 px-3 text-sm font-medium text-ice-600 transition hover:bg-ice-100"
     >
       {lang === 'pt' ? 'EN' : 'PT'}
     </a>
   );
 }
 ```
+
+> NOTE: This is a React island (`.tsx`) — use `className` (not `class`) and React 18 conventions throughout the `.tsx` components in this plan.
 
 - [ ] **Step 2: Mobile nav island**
 
@@ -655,12 +656,23 @@ interface Item { href: string; label: string; }
 export default function MobileNav({ items }: { items: Item[] }) {
   const [open, setOpen] = useState(false);
   return (
-    <div class="md:hidden">
-      <button aria-label="Menu" onClick={() => setOpen(!open)} class="text-ice-600 text-2xl">☰</button>
+    <div className="md:hidden">
+      <button
+        aria-label="Menu"
+        aria-expanded={open}
+        onClick={() => setOpen(!open)}
+        className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center text-ice-600"
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+          {open
+            ? <><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></>
+            : <><line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" /></>}
+        </svg>
+      </button>
       {open && (
-        <nav class="absolute left-0 right-0 top-full bg-white/95 border-b border-ice-200 px-6 py-4 flex flex-col gap-3">
+        <nav className="absolute left-0 right-0 top-full flex flex-col gap-3 border-b border-ice-200 bg-white/95 px-6 py-4">
           {items.map((it) => (
-            <a key={it.href} href={it.href} class="text-ice-ink" onClick={() => setOpen(false)}>{it.label}</a>
+            <a key={it.href} href={it.href} className="min-h-[44px] text-ice-ink" onClick={() => setOpen(false)}>{it.label}</a>
           ))}
         </nav>
       )}
@@ -722,36 +734,16 @@ git commit -m "feat: add navbar, language switcher, and mobile nav"
 
 ---
 
-## Task 8: Reveal island + Hero section
+## Task 8: Hero section
 
 **Files:**
-- Create: `src/components/Reveal.tsx`, `src/components/Hero.astro`
+- Create: `src/components/Hero.astro`
 
-- [ ] **Step 1: Scroll-reveal island**
+> NOTE: A generic scroll-reveal island was considered but dropped for v1 (YAGNI — no
+> section consumed it; the hero uses a CSS-only staggered load instead). Scroll-triggered
+> section reveals can be added later as a focused enhancement.
 
-`src/components/Reveal.tsx`:
-
-```tsx
-import { useEffect, useRef, useState, type ReactNode } from 'react';
-export default function Reveal({ children }: { children: ReactNode }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [shown, setShown] = useState(false);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setShown(true); io.disconnect(); } }, { threshold: 0.15 });
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
-  return (
-    <div ref={ref} class={`transition-all duration-700 ${shown ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
-      {children}
-    </div>
-  );
-}
-```
-
-- [ ] **Step 2: Hero**
+- [ ] **Step 1: Hero**
 
 `src/components/Hero.astro`:
 
@@ -796,7 +788,7 @@ const stat = lang === 'pt' ? 'Fundador & CEO' : 'Founder & CEO';
 </style>
 ```
 
-- [ ] **Step 3: Verify build**
+- [ ] **Step 2: Verify build**
 
 ```bash
 npm run build
@@ -804,11 +796,11 @@ npm run build
 
 Expected: build succeeds.
 
-- [ ] **Step 4: Commit**
+- [ ] **Step 3: Commit**
 
 ```bash
 git add -A
-git commit -m "feat: add scroll-reveal island and hero section"
+git commit -m "feat: add hero section"
 ```
 
 ---
@@ -872,11 +864,11 @@ export default function Snowstorm() {
   if (done) return null;
   return (
     <div
-      class="snow-overlay"
+      className="snow-overlay"
       onAnimationEnd={(e) => { if (e.animationName === 'snowOut') setDone(true); }}
     >
-      <canvas ref={canvasRef} class="block h-full w-full" />
-      <span class="snow-mark">❄ IceGames</span>
+      <canvas ref={canvasRef} className="block h-full w-full" />
+      <span className="snow-mark" aria-hidden="true">IceGames</span>
       <style>{`
         .snow-overlay { position: fixed; inset: 0; z-index: 100; background:
           radial-gradient(60% 60% at 50% 40%, #ffffff, #dcebf8 60%, #c6def2);
@@ -1424,15 +1416,43 @@ Sitemap: https://icegames.dev/sitemap-index.xml
 
 - [ ] **Step 2: Favicon (snowflake)**
 
-`public/favicon.svg`:
+`public/favicon.svg` — a vector snowflake (no emoji), in ice blue:
 
 ```svg
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><text x="16" y="24" font-size="24" text-anchor="middle">❄</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none" stroke="#1c6fb0" stroke-width="2" stroke-linecap="round">
+  <line x1="16" y1="3" x2="16" y2="29"/>
+  <line x1="5" y1="9.5" x2="27" y2="22.5"/>
+  <line x1="27" y1="9.5" x2="5" y2="22.5"/>
+  <g stroke-width="1.6">
+    <path d="M16 3 l-3 3 M16 3 l3 3 M16 29 l-3 -3 M16 29 l3 -3"/>
+    <path d="M5 9.5 l0.3 4.2 M5 9.5 l4.1 -1 M27 22.5 l-0.3 -4.2 M27 22.5 l-4.1 1"/>
+    <path d="M27 9.5 l-4.1 -1 M27 9.5 l-0.3 4.2 M5 22.5 l4.1 1 M5 22.5 l0.3 -4.2"/>
+  </g>
+</svg>
 ```
 
-- [ ] **Step 3: Add a placeholder og-image**
+- [ ] **Step 3: Add a placeholder og-image (1200×630 PNG)**
 
-Create any 1200×630 PNG at `public/og-image.png` (a simple Frost Light card with "IceGames" is fine; replace later).
+Generate `public/og-image.png` at 1200×630 from an inline Frost Light SVG (light gradient background, "IceGames" + "Vitor Albert" + a tagline, a snowflake accent). Astro already bundles `sharp` (used by `astro:assets`), so rasterize with a one-off Node script, e.g.:
+
+```js
+// scripts/make-og.mjs (temporary; can be deleted after running)
+import sharp from 'sharp';
+const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630">
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#f7fbfe"/><stop offset="0.6" stop-color="#eaf4fb"/><stop offset="1" stop-color="#d8ebf8"/>
+  </linearGradient></defs>
+  <rect width="1200" height="630" fill="url(#g)"/>
+  <circle cx="980" cy="150" r="220" fill="#38bdf8" opacity="0.12"/>
+  <text x="90" y="300" font-family="Arial, sans-serif" font-size="96" font-weight="700" fill="#0a1a2b">IceGames</text>
+  <text x="92" y="370" font-family="Arial, sans-serif" font-size="40" fill="#1c6fb0">Vitor Albert · Game Designer &amp; Java Dev</text>
+  <text x="92" y="430" font-family="Arial, sans-serif" font-size="28" fill="#155488">Servidores Minecraft · Backend Java · Software com IA</text>
+</svg>`;
+await sharp(Buffer.from(svg)).png().toFile('public/og-image.png');
+console.log('og-image.png written');
+```
+
+Run it with `node scripts/make-og.mjs`. If `sharp` cannot be resolved as a standalone import, instead run the rasterization through Astro's bundled copy or report it — do NOT add a new heavy dependency just for this; a follow-up can replace the placeholder. After generating the PNG, you may delete the temp script.
 
 - [ ] **Step 4: Verify build produces sitemap**
 
