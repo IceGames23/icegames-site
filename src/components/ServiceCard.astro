@@ -1,0 +1,9 @@
+---
+import { Icon } from 'astro-icon/components';
+const { icon, title, desc } = Astro.props as { icon: string; title: string; desc: string };
+---
+<div class="card-frost p-6">
+  <span class="inline-flex rounded-lg bg-ice-100 p-3 text-ice-600"><Icon name={icon} class="icon" /></span>
+  <h3 class="mt-4 text-lg font-semibold">{title}</h3>
+  <p class="mt-2 text-sm text-ice-700">{desc}</p>
+</div>

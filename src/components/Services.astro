@@ -1,0 +1,23 @@
+---
+import ServiceCard from './ServiceCard.astro';
+import type { Lang } from '../i18n/ui';
+const { lang } = Astro.props as { lang: Lang };
+const heading = lang === 'pt' ? 'Serviços' : 'Services';
+const services = lang === 'pt'
+  ? [
+      { icon: 'lucide:gamepad-2', title: 'Servidores Minecraft', desc: 'RankUP, MMORPG e plugins Java sob medida.' },
+      { icon: 'lucide:server-cog', title: 'Dev Java / Backend', desc: 'Sistemas e projetos para clientes internacionais.' },
+      { icon: 'lucide:bot', title: 'Software com IA', desc: 'Automação e aceleração de processos para empresas.' },
+    ]
+  : [
+      { icon: 'lucide:gamepad-2', title: 'Minecraft Servers', desc: 'RankUP, MMORPG and custom Java plugins.' },
+      { icon: 'lucide:server-cog', title: 'Java / Backend Dev', desc: 'Systems and projects for international clients.' },
+      { icon: 'lucide:bot', title: 'AI Software', desc: 'Process automation and acceleration for companies.' },
+    ];
+---
+<section id="services" class="section">
+  <h2 class="text-3xl font-bold">{heading}</h2>
+  <div class="mt-8 grid gap-6 md:grid-cols-3">
+    {services.map((s) => <ServiceCard icon={s.icon} title={s.title} desc={s.desc} />)}
+  </div>
+</section>
