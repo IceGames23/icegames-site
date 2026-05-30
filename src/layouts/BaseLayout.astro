@@ -1,0 +1,29 @@
+---
+import '../styles/global.css';
+import { site } from '../data/site';
+import type { Lang } from '../i18n/ui';
+
+interface Props { lang: Lang; title: string; description: string; path?: string; }
+const { lang, title, description, path = '' } = Astro.props;
+const base = site.url;
+---
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={`${base}/og-image.png`} />
+    <meta property="og:type" content="website" />
+    <link rel="alternate" hreflang="pt" href={`${base}/pt/${path}`} />
+    <link rel="alternate" hreflang="en" href={`${base}/en/${path}`} />
+    <link rel="alternate" hreflang="x-default" href={`${base}/pt/${path}`} />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
