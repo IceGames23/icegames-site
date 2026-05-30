@@ -1,0 +1,17 @@
+---
+import { getCollection } from 'astro:content';
+import ProjectCard from './ProjectCard.astro';
+import { useTranslations, type Lang } from '../i18n/utils';
+const { lang } = Astro.props as { lang: Lang };
+const t = useTranslations(lang);
+const heading = lang === 'pt' ? 'Projetos em destaque' : 'Featured projects';
+const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+---
+<section id="projects" class="section">
+  <h2 class="text-3xl font-bold">{heading}</h2>
+  <div class="mt-8 grid gap-6 md:grid-cols-3">
+    {projects.map((p) => (
+      <ProjectCard lang={lang} slug={p.slug} title={p.data.title[lang]} summary={p.data.summary[lang]} tech={p.data.tech} cover={p.data.cover} />
+    ))}
+  </div>
+</section>

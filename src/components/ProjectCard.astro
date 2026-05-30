@@ -1,0 +1,27 @@
+---
+import { Image } from 'astro:assets';
+import { Icon } from 'astro-icon/components';
+import type { Lang } from '../i18n/ui';
+import type { ImageMetadata } from 'astro';
+const { lang, slug, title, summary, tech, cover } = Astro.props as {
+  lang: Lang; slug: string; title: string; summary: string; tech: string[]; cover?: ImageMetadata;
+};
+const viewLabel = lang === 'pt' ? 'Ver projeto' : 'View project';
+---
+<a href={`/${lang}/projetos/${slug}`} class="card-frost group block overflow-hidden">
+  <div class="relative aspect-video overflow-hidden bg-ice-100">
+    {cover
+      ? <Image src={cover} alt={title} loading="lazy" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+      : <div class="flex h-full w-full items-center justify-center text-ice-300"><Icon name="lucide:image" class="icon" /></div>}
+  </div>
+  <div class="p-6">
+    <h3 class="text-lg font-semibold">{title}</h3>
+    <p class="mt-2 text-sm text-ice-700">{summary}</p>
+    <div class="mt-4 flex flex-wrap gap-2">
+      {tech.map((ttag) => <span class="tag">{ttag}</span>)}
+    </div>
+    <span class="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-ice-600 opacity-0 transition group-hover:opacity-100">
+      {viewLabel} <Icon name="lucide:arrow-right" class="h-4 w-4" />
+    </span>
+  </div>
+</a>
