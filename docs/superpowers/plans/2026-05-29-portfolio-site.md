@@ -23,7 +23,7 @@ src/
     ui.ts                     # UI string dictionaries (pt, en) + types
     utils.ts                  # getLangFromUrl, useTranslations, fallback
     utils.test.ts             # Vitest tests for the helpers
-  content.config.ts           # Zod schemas: projects, testimonials
+  content/config.ts           # Zod schemas: projects, testimonials (Astro 4 content API)
   content/
     projects/afterlands.md    # sample project (featured)
     projects/example-freela.md
@@ -413,22 +413,25 @@ git commit -m "feat: add i18n dictionaries and translation helper with tests"
 ## Task 5: Content collections (projects + testimonials) + sample content
 
 **Files:**
-- Create: `src/content.config.ts`
+- Create: `src/content/config.ts`
 - Create: `src/content/projects/afterlands.md`, `src/content/projects/example-freela.md`
 - Create: `src/content/testimonials/cliente-1.md`
 
+> NOTE (Astro 4): this project uses Astro 4.x, so collections use the classic
+> `type: 'content'` API and live at `src/content/config.ts` (not the Astro 5 Content
+> Layer `glob` loader). Entries expose `.slug` (not `.id`) and `entry.render()`.
+
 - [ ] **Step 1: Define the schemas**
 
-`src/content.config.ts`:
+`src/content/config.ts`:
 
 ```ts
 import { defineCollection, z } from 'astro:content';
-import { glob } from 'astro/loaders';
 
 const bilingual = z.object({ pt: z.string(), en: z.string() });
 
 const projects = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/projects' }),
+  type: 'content',
   schema: ({ image }) =>
     z.object({
       title: bilingual,
@@ -445,7 +448,7 @@ const projects = defineCollection({
 });
 
 const testimonials = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/testimonials' }),
+  type: 'content',
   schema: z.object({
     author: z.string(),
     role: bilingual,
@@ -1074,7 +1077,7 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.order -
   <h2 class="text-3xl font-bold">{heading}</h2>
   <div class="mt-8 grid gap-6 md:grid-cols-3">
     {projects.map((p) => (
-      <ProjectCard lang={lang} slug={p.id} title={p.data.title[lang]} summary={p.data.summary[lang]} tech={p.data.tech} cover={p.data.cover} />
+      <ProjectCard lang={lang} slug={p.slug} title={p.data.title[lang]} summary={p.data.summary[lang]} tech={p.data.tech} cover={p.data.cover} />
     ))}
   </div>
 </section>
@@ -1350,7 +1353,7 @@ git commit -m "feat: compose home page and add root redirect"
 
 ```astro
 ---
-import { getCollection, render } from 'astro:content';
+import { getCollection } from 'astro:content';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Navbar from '../../../components/Navbar.astro';
 import Footer from '../../../components/Footer.astro';
@@ -1360,17 +1363,17 @@ export async function getStaticPaths() {
   const projects = await getCollection('projects');
   const langs: Lang[] = ['pt', 'en'];
   return langs.flatMap((lang) =>
-    projects.map((p) => ({ params: { lang, slug: p.id }, props: { entry: p } }))
+    projects.map((p) => ({ params: { lang, slug: p.slug }, props: { entry: p } }))
   );
 }
 
 const lang = Astro.params.lang as Lang;
 const { entry } = Astro.props;
-const { Content } = await render(entry);
+const { Content } = await entry.render();
 const backLabel = lang === 'pt' ? '← Voltar' : '← Back';
 ---
-<BaseLayout lang={lang} title={`${entry.data.title[lang]} — IceGames`} description={entry.data.summary[lang]} path={`projetos/${entry.id}`}>
-  <Navbar lang={lang} path={`projetos/${entry.id}`} />
+<BaseLayout lang={lang} title={`${entry.data.title[lang]} — IceGames`} description={entry.data.summary[lang]} path={`projetos/${entry.slug}`}>
+  <Navbar lang={lang} path={`projetos/${entry.slug}`} />
   <main class="section">
     <a href={`/${lang}/`} class="text-sm text-ice-600">{backLabel}</a>
     <h1 class="mt-4 text-4xl font-bold">{entry.data.title[lang]}</h1>
@@ -1496,4 +1499,4 @@ git commit -m "chore: final verification fixes"
 
 - **Spec coverage:** Hero/About/Services/Projects/Skills/Testimonials/Contact/Footer → Tasks 8–15; project detail pages → Task 16; i18n PT/EN → Tasks 3,4 + per-section dictionaries; Markdown/JSON content → Task 5; Frost Light theme → Task 2; SEO/hreflang/sitemap → Tasks 6,17; static host-agnostic build → all tasks build to `dist/`; contact-via-links (no form) → Task 14; testing strategy (vitest + build + astro check + Lighthouse) → Tasks 4,18. All spec sections map to tasks.
 - **Placeholder scan:** Remaining placeholders (social handles, domain, og-image) are intentional content/config follow-ups listed under Open Items, not missing implementation. No "TBD" steps in build tasks.
-- **Type consistency:** `Lang`, `useTranslations`, `getLangFromUrl`, `localizedPath`, `site`, collection field names (`title`, `summary`, `role`, `tech`, `featured`, `order`, `links`, `quote`, `author`) are used consistently across tasks. Collection entry id accessed as `p.id` throughout.
+- **Type consistency:** `Lang`, `useTranslations`, `getLangFromUrl`, `localizedPath`, `site`, collection field names (`title`, `summary`, `role`, `tech`, `featured`, `order`, `links`, `quote`, `author`) are used consistently across tasks. Collection entry slug accessed as `p.slug` throughout (Astro 4 content API).
