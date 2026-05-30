@@ -3,8 +3,8 @@ import { getCollection } from 'astro:content';
 import ProjectCard from './ProjectCard.astro';
 import type { Lang } from '../i18n/utils';
 const { lang } = Astro.props as { lang: Lang };
-const heading = lang === 'pt' ? 'Projetos em destaque' : 'Featured projects';
-const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+const heading = lang === 'pt' ? 'Projetos' : 'Projects';
+const projects = (await getCollection('projects')).sort((a, b) => Number(b.data.featured) - Number(a.data.featured) || a.data.order - b.data.order);
 ---
 <section id="projects" class="section">
   <h2 class="text-3xl font-bold">{heading}</h2>

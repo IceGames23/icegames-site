@@ -13,7 +13,6 @@ export const ui = {
     'hero.role': 'Game Designer · Desenvolvedor Java',
     'hero.cta.projects': 'Ver projetos',
     'hero.cta.contact': 'Me contratar',
-    'projects.viewAll': 'Ver todos os projetos',
     'contact.heading': 'Vamos construir algo juntos?',
   },
   en: {
@@ -26,7 +25,6 @@ export const ui = {
     'hero.role': 'Game Designer · Java Developer',
     'hero.cta.projects': 'View projects',
     'hero.cta.contact': 'Hire me',
-    'projects.viewAll': 'View all projects',
     'contact.heading': "Let's build something together?",
   },
 } as const;
