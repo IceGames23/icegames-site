@@ -177,6 +177,7 @@
   }
 
   /* ---------- modals ---------- */
+  var lastFocus = null;
   function syncScrollLock() {
     document.body.style.overflow = (state.modalId || state.discordOpen || state.menuOpen) ? 'hidden' : '';
   }
@@ -241,15 +242,27 @@
     dialog.scrollTop = 0;
   }
 
-  function openModal(id) { state.modalId = id; renderModal(); syncScrollLock(); }
+  function openModal(id) {
+    lastFocus = document.activeElement;
+    state.modalId = id; renderModal(); syncScrollLock();
+    var c = $('#project-modal .pm-close'); if (c) c.focus();
+  }
   function closeModal() {
     if (!state.modalId) return;
     state.modalId = null; renderModal(); syncScrollLock();
+    if (lastFocus && lastFocus.focus && document.contains(lastFocus)) lastFocus.focus();
+    lastFocus = null;
   }
-  function openDiscord() { state.discordOpen = true; $('#discord-modal').hidden = false; syncScrollLock(); }
+  function openDiscord() {
+    lastFocus = document.activeElement;
+    state.discordOpen = true; $('#discord-modal').hidden = false; syncScrollLock();
+    var c = $('#discord-modal [data-close-discord]'); if (c) c.focus();
+  }
   function closeDiscord() {
     if (!state.discordOpen) return;
     state.discordOpen = false; $('#discord-modal').hidden = true; syncScrollLock();
+    if (lastFocus && lastFocus.focus && document.contains(lastFocus)) lastFocus.focus();
+    lastFocus = null;
   }
 
   /* ---------- mobile menu ---------- */
@@ -265,9 +278,11 @@
       /* force a frame so the opacity/transform transition runs */
       void panel.offsetWidth;
       panel.setAttribute('data-open', 'true');
+      var first = $('#mobile-nav .mnav-link'); if (first) first.focus();
     } else {
       panel.setAttribute('data-open', 'false');
       panel.hidden = true;
+      btn.focus();
     }
     syncScrollLock();
   }
