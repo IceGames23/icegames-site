@@ -186,7 +186,7 @@ window.IG_DATA = {
       heroSub: "I'm Vitor Albert, a.k.a. IceGames. I design the game and build the engineering that keeps it standing: Minecraft servers, live events and AI-powered software that run with hundreds of concurrent players.",
       heroCta1: "View projects", heroCta2: "Let's talk",
       statPlayers: "Players reached", statProjects: "Projects shipped", statRating: "Average rating", statUptime: "Server uptime",
-      servEyebrow: "What I build", servTitle: "From the design document to the server going live.",
+      servEyebrow: "What I build", servTitle: "From the design document to the project going live.",
       servSub: "Four areas of work. Each one with a delivered project you can open and check right now.",
       servProof: "See the proof",
       serv1Title: "Game design and narrative", serv1Model: "Fixed project or consulting",
