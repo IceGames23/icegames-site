@@ -435,13 +435,14 @@
   }
 
   /* ---------- testimonial rail ---------- */
-  function initRail() {
-    var el = $('#testi-rail');
-    var track = $('#testimonials');
+  /* An auto-scrolling, infinitely wrapping horizontal rail. The track holds
+     its items twice; wrap() jumps by half the track so the loop is seamless.
+     Mouse: hover pauses, press-and-drag scrolls. Touch: native scrolling. */
+  function makeRail(el, track) {
     if (!el || !track) return;
     var paused = false, drag = null, resume = 0;
 
-    /* distance between the first card and the first duplicated card */
+    /* distance between the first item and its duplicate */
     var half = function () {
       var n = track.children.length;
       if (!n) return 0;
@@ -455,12 +456,12 @@
       else if (el.scrollLeft <= 0) el.scrollLeft += h;
     };
     /* fractional position mirror: some mobile browsers (iOS Safari) round
-       scrollLeft to whole pixels, so "+= 0.5" would never leave 0 */
+       scrollLeft to whole pixels, so small per-frame steps would never leave 0 */
     var pos = 0;
     /* speed in CSS px per second (frame-rate independent); faster on touch
        devices, where whole-pixel scrolling makes slow speeds look choppy */
     var touch = !!(window.matchMedia && window.matchMedia('(hover: none)').matches);
-    var speed = touch ? 60 : 30;
+    var speed = touch ? 48 : 30;
     var last = 0;
     var loop = function (now) {
       var dt = last ? Math.min(0.05, (now - last) / 1000) : 0;
@@ -487,17 +488,33 @@
     el.addEventListener('touchend', function () { resume = performance.now() + 1400; }, { passive: true });
     el.addEventListener('pointerdown', function (e) {
       if (e.pointerType === 'touch') return;          /* native scroll on touch */
-      drag = { x: e.clientX, left: el.scrollLeft };
+      drag = { x: e.clientX, left: el.scrollLeft, moved: false };
       if (el.setPointerCapture) el.setPointerCapture(e.pointerId);
     });
     el.addEventListener('pointermove', function (e) {
       if (!drag) return;
       e.preventDefault();
+      if (Math.abs(e.clientX - drag.x) > 4) drag.moved = true;
       el.scrollLeft = drag.left - (e.clientX - drag.x);
     });
-    var up = function () { if (drag) { drag = null; resume = performance.now() + 1400; } };
+    /* a mouse drag that actually moved must not count as a click on a logo link */
+    var suppressClick = false;
+    var up = function () {
+      if (!drag) return;
+      suppressClick = drag.moved;
+      drag = null;
+      resume = performance.now() + 1400;
+    };
     el.addEventListener('pointerup', up);
     el.addEventListener('pointercancel', up);
+    el.addEventListener('click', function (e) {
+      if (suppressClick) { e.preventDefault(); e.stopPropagation(); suppressClick = false; }
+    }, true);
+  }
+
+  function initRail() {
+    makeRail($('#testi-rail'), $('#testimonials'));
+    makeRail($('.clients-mask'), $('#clients-rail'));
   }
 
   /* ---------- events ---------- */
