@@ -172,7 +172,7 @@ use `fit: contain`).
 - JSON-LD `Person` (name, alternateName IceGames, jobTitle, url, sameAs
   GitHub/LinkedIn).
 - `robots.txt` allowing all + sitemap URL; `sitemap.xml` with the single URL.
-- `_headers`: `assets/*` → `Cache-Control: public, max-age=31536000, immutable`;
+- `_headers`: `assets/*` → `Cache-Control: public, max-age=604800` (1 week; file names are not hashed, so no `immutable`);
   `/*` → `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`,
   `X-Frame-Options: DENY`.
 
