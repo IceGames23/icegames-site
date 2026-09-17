@@ -306,10 +306,130 @@
   }
 
   /* ---------- splash · reveal · snow · rail (Task 8) ---------- */
-  function initSplash() { $('#splash').setAttribute('data-hide', 'true'); /* replaced in Task 8 */ }
-  function initReveal() { /* filled in Task 8 */ }
-  function initSnow() { /* filled in Task 8 */ }
-  function initRail() { /* filled in Task 8 */ }
+
+  /* ---------- splash ---------- */
+  function initSplash() {
+    var el = $('#splash');
+    var done = false;
+    var finish = function () { if (done) return; done = true; el.setAttribute('data-hide', 'true'); };
+    if (document.readyState === 'complete') setTimeout(finish, 450);
+    else window.addEventListener('load', function () { setTimeout(finish, 350); });
+    setTimeout(finish, 2600);   /* fallback if load stalls (fonts, video metadata) */
+  }
+
+  /* ---------- reveal ---------- */
+  function initReveal() {
+    var els = $$('[data-reveal]');
+    if (!('IntersectionObserver' in window)) return;
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -6% 0px' });
+    els.forEach(function (el) { el.classList.add('is-reveal'); io.observe(el); });
+  }
+
+  /* ---------- snow ---------- */
+  function initSnow() {
+    var cv = $('#snow');
+    if (!cv || reduceMotion) return;
+    var ctx = cv.getContext('2d');
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var accent = getComputedStyle(document.documentElement).getPropertyValue('--ac').trim() || '#6ED4F2';
+    var w = 0, h = 0, flakes = [];
+
+    var resize = function () {
+      w = cv.clientWidth; h = cv.clientHeight;
+      cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      var count = Math.round(Math.min(220, (w * h) / 9000));
+      flakes = [];
+      for (var i = 0; i < count; i++) {
+        flakes.push({
+          x: Math.random() * w,
+          y: Math.random() * h,
+          s: 1 + Math.floor(Math.random() * 3),
+          vy: 14 + Math.random() * 48,
+          drift: 6 + Math.random() * 26,
+          phase: Math.random() * Math.PI * 2,
+          a: 0.18 + Math.random() * 0.5,
+        });
+      }
+    };
+    resize();
+    window.addEventListener('resize', resize);
+
+    var t0 = performance.now(), last = t0;
+    var draw = function (now) {
+      if (cv.clientWidth !== w || cv.clientHeight !== h) resize();
+      if (!w || !h) { requestAnimationFrame(draw); return; }
+      var dt = Math.min(0.05, (now - last) / 1000);
+      last = now;
+      var life = (now - t0) / 1000;
+      /* blizzard on arrival: strong gust that settles into a calm drift */
+      var gust = 1 + 3.4 * Math.exp(-life / 1.9);
+      ctx.clearRect(0, 0, w, h);
+      for (var i = 0; i < flakes.length; i++) {
+        var f = flakes[i];
+        f.phase += dt * 1.1;
+        f.y += f.vy * gust * dt;
+        f.x += (Math.sin(f.phase) * f.drift + 26 * (gust - 1)) * dt;
+        if (f.y - f.s > h) { f.y = -f.s * 2; f.x = Math.random() * w; }
+        if (f.x > w + 6) f.x = -6;
+        if (f.x < -6) f.x = w + 6;
+        ctx.globalAlpha = f.a * Math.min(1, 0.45 + gust * 0.25);
+        ctx.fillStyle = f.s > 2 ? accent : '#F4F1EA';
+        ctx.fillRect(Math.round(f.x), Math.round(f.y), f.s, f.s);
+      }
+      ctx.globalAlpha = 1;
+      requestAnimationFrame(draw);
+    };
+    requestAnimationFrame(draw);
+  }
+
+  /* ---------- testimonial rail ---------- */
+  function initRail() {
+    var el = $('#testi-rail');
+    var track = $('#testimonials');
+    if (!el || !track) return;
+    var paused = false, drag = null, resume = 0;
+
+    /* distance between the first card and the first duplicated card */
+    var half = function () {
+      var n = track.children.length;
+      if (!n) return 0;
+      var mid = track.children[Math.floor(n / 2)];
+      return mid ? mid.offsetLeft - track.children[0].offsetLeft : 0;
+    };
+    var wrap = function () {
+      var h = half();
+      if (h <= 0) return;
+      if (el.scrollLeft >= h) el.scrollLeft -= h;
+      else if (el.scrollLeft <= 0) el.scrollLeft += h;
+    };
+    var loop = function (now) {
+      if (!reduceMotion && !paused && !drag && now > resume) el.scrollLeft += 0.5;
+      wrap();
+      requestAnimationFrame(loop);
+    };
+    requestAnimationFrame(loop);
+
+    el.addEventListener('pointerenter', function () { paused = true; });
+    el.addEventListener('pointerleave', function () { paused = false; });
+    el.addEventListener('pointerdown', function (e) {
+      if (e.pointerType === 'touch') return;          /* native scroll on touch */
+      drag = { x: e.clientX, left: el.scrollLeft };
+      if (el.setPointerCapture) el.setPointerCapture(e.pointerId);
+    });
+    el.addEventListener('pointermove', function (e) {
+      if (!drag) return;
+      e.preventDefault();
+      el.scrollLeft = drag.left - (e.clientX - drag.x);
+    });
+    var up = function () { if (drag) { drag = null; resume = performance.now() + 1400; } };
+    el.addEventListener('pointerup', up);
+    el.addEventListener('pointercancel', up);
+  }
 
   /* ---------- events ---------- */
   document.addEventListener('click', function (e) {
