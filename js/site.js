@@ -100,8 +100,16 @@
         ? '<a class="client" href="' + esc(c.href) + '" target="_blank" rel="noopener" title="' + esc(c.name) + '" style="' + style + '"' + ah + '>' + img + '</a>'
         : '<div class="client" title="' + esc(c.name) + '" style="' + style + '"' + ah + '>' + img + '</div>';
     };
-    var html = D.CLIENTS.map(function (c) { return build(c, false); }).join('')
-      + D.CLIENTS.map(function (c) { return build(c, true); }).join('');
+    /* The rail scrolls, so the track must overflow the viewport even on wide
+       screens or at low zoom: repeat the list an even number of times (the
+       wrap point is the middle of the track). One copy is ~1300 px, so six
+       copies (~7800 px) overflow a 4K display. Only the first copy is exposed
+       to assistive tech. */
+    var COPIES = 6;
+    var html = '';
+    for (var i = 0; i < COPIES; i++) {
+      html += D.CLIENTS.map(function (c) { return build(c, i > 0); }).join('');
+    }
     $('#clients-rail').innerHTML = html;
   }
 
