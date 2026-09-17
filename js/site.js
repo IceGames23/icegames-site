@@ -409,7 +409,9 @@
     };
     var loop = function (now) {
       if (!reduceMotion && !paused && !drag && now > resume) el.scrollLeft += 0.5;
-      wrap();
+      /* under reduced motion the rail must stay put while idle; only wrap
+         while a drag is in progress (or resolving) so dragging still works */
+      if (!reduceMotion || drag) wrap();
       requestAnimationFrame(loop);
     };
     requestAnimationFrame(loop);
