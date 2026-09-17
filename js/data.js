@@ -188,7 +188,7 @@ window.IG_DATA = {
       heroRole: "Software Engineer & Game Designer · CalArts certified",
       heroH1a: "Turning the impossible into the ", heroH1b: "possible",
       heroClients: "Worked with", heroClientFree: "+ logo",
-      heroSub: "I'm Vitor Albert, a.k.a. IceGames. I design the game and build the engineering that keeps it standing: Minecraft servers, live events and AI-powered software that run with hundreds of current players.",
+      heroSub: "I'm Vitor Albert, a.k.a. IceGames. I design the game and build the engineering that keeps it standing: Minecraft servers, live events and AI-powered software that run with hundreds of concurrent players.",
       heroCta1: "View projects", heroCta2: "Let's talk",
       statPlayers: "Players reached", statProjects: "Projects shipped", statRating: "Average rating", statUptime: "Server uptime",
       servEyebrow: "What I build", servTitle: "From the design document to the server going live.",

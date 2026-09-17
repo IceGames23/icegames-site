@@ -84,23 +84,31 @@
     document.documentElement.lang = state.lang;
     $$('[data-i18n]').forEach(function (el) { el.textContent = t(el.getAttribute('data-i18n')); });
     $$('[data-i18n-placeholder]').forEach(function (el) { el.placeholder = t(el.getAttribute('data-i18n-placeholder')); });
-    $$('.lang-btn').forEach(function (b) { b.setAttribute('data-active', String(b.getAttribute('data-lang') === state.lang)); });
+    $$('.lang-btn').forEach(function (b) {
+      var isActive = b.getAttribute('data-lang') === state.lang;
+      b.setAttribute('data-active', String(isActive));
+      b.setAttribute('aria-pressed', String(isActive));
+    });
   }
 
   function renderClients() {
-    var html = D.CLIENTS.concat(D.CLIENTS).map(function (c) {
+    var build = function (c, hidden) {
       var img = '<img src="' + esc(c.src) + '" alt="' + esc(c.name) + '" loading="lazy">';
       var style = 'width:' + esc(c.w) + ';height:' + esc(c.h);
+      var ah = hidden ? ' aria-hidden="true"' : '';
       return c.href
-        ? '<a class="client" href="' + esc(c.href) + '" target="_blank" rel="noopener" title="' + esc(c.name) + '" style="' + style + '">' + img + '</a>'
-        : '<div class="client" title="' + esc(c.name) + '" style="' + style + '">' + img + '</div>';
-    }).join('');
+        ? '<a class="client" href="' + esc(c.href) + '" target="_blank" rel="noopener" title="' + esc(c.name) + '" style="' + style + '"' + ah + '>' + img + '</a>'
+        : '<div class="client" title="' + esc(c.name) + '" style="' + style + '"' + ah + '>' + img + '</div>';
+    };
+    var html = D.CLIENTS.map(function (c) { return build(c, false); }).join('')
+      + D.CLIENTS.map(function (c) { return build(c, true); }).join('');
     $('#clients-rail').innerHTML = html;
   }
 
   function renderFilters() {
     $('#filters').innerHTML = FILTERS.map(function (f) {
-      return '<button class="chip" type="button" data-filter="' + esc(f[0]) + '" data-active="' + (state.filter === f[0]) + '">' + esc(t(f[1])) + '</button>';
+      var active = state.filter === f[0];
+      return '<button class="chip" type="button" data-filter="' + esc(f[0]) + '" data-active="' + active + '" aria-pressed="' + active + '">' + esc(t(f[1])) + '</button>';
     }).join('');
   }
 
@@ -148,13 +156,15 @@
   }
 
   function renderTestimonials() {
-    $('#testimonials').innerHTML = D.TESTIMONIALS.concat(D.TESTIMONIALS).map(function (q) {
-      return '<figure class="testi">' +
+    var build = function (q, hidden) {
+      return '<figure class="testi"' + (hidden ? ' aria-hidden="true"' : '') + '>' +
         '<span class="stars">' + esc(q.stars) + '</span>' +
         '<blockquote>“' + esc(L(q.quote)) + '”</blockquote>' +
         '<figcaption>' + esc(q.name) + ' · ' + esc(L(q.role)) + '</figcaption>' +
         '</figure>';
-    }).join('');
+    };
+    $('#testimonials').innerHTML = D.TESTIMONIALS.map(function (q) { return build(q, false); }).join('')
+      + D.TESTIMONIALS.map(function (q) { return build(q, true); }).join('');
   }
 
   function renderAsk() {
@@ -300,6 +310,7 @@
     $('#submit-label').textContent = t(state.sending ? 'formSending' : 'formSubmit');
     $('#submit-spinner').hidden = !state.sending;
     $('#submit-arrow').hidden = state.sending;
+    $('#contact-form button[type=submit]').disabled = state.sending;
   }
 
   function validate() {
