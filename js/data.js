@@ -82,9 +82,6 @@ window.IG_DATA = {
     { name: "Victor Polleto", stars: "★★★★★",
       role: { pt: "CEO · Mia Studios", en: "CEO · Mia Studios" },
       quote: { pt: "Nosso prazo era curto e a gente precisava do servidor de produção funcionando para ontem. Entregou antes do combinado e com mais do que a gente tinha pedido: o time entrou trabalhando no mesmo dia.", en: "Our deadline was tight and we needed the production server working yesterday. He delivered ahead of schedule and with more than we had asked for: the team started working the same day." } },
-    { name: "Sarah Klein", stars: "★★★★★",
-      role: { pt: "CTO · Nordic Apps", en: "CTO · Nordic Apps" },
-      quote: { pt: "We were worried about the timezone and the language barrier. In the end, the process that used to eat the team's morning now runs on its own with AI, and the answers come out better than ours.", en: "We were worried about the timezone and the language barrier. In the end, the process that used to eat the team's morning now runs on its own with AI, and the answers come out better than ours." } },
   ],
 
   /* Logos in the hero marquee. w/h are the box the logo is fitted into. href "" = not a link */
@@ -154,8 +151,6 @@ window.IG_DATA = {
       aboutHint: "passe o mouse",
       aboutFact1: "Certificado CalArts", aboutFact2: "Cursando UFG", aboutFact3: "Bilíngue (PT / EN)", aboutFact4: "Brasil",
       testiEyebrow: "Depoimentos", testiTitle: "O que dizem os clientes.", testiDrag: "Arraste para navegar",
-      testiQ1: "Entregou o plugin antes do prazo e a comunidade adorou. Comunicação impecável do começo ao fim.", testiR1: "Dono · MineCraftBR Network",
-      testiQ2: "Clean code, clear English and on-time delivery. Would hire Vitor again in a heartbeat.", testiR2: "CTO · Nordic Apps",
       procEyebrow: "Como eu trabalho", procTitle: "Sem surpresa no meio do caminho.",
       procSub: "Todo projeto segue o mesmo processo, do primeiro contato ao suporte depois da entrega.",
       procG1: "Resposta em até 24h", procG2: "Escopo e prazo por escrito", procG3: "Suporte após a entrega",
@@ -216,8 +211,6 @@ window.IG_DATA = {
       aboutHint: "hover to flip",
       aboutFact1: "CalArts certified", aboutFact2: "Studying at UFG", aboutFact3: "Bilingual (PT / EN)", aboutFact4: "Based in Brazil",
       testiEyebrow: "Testimonials", testiTitle: "What clients say.", testiDrag: "Drag to explore",
-      testiQ1: "Delivered the plugin ahead of schedule and the community loved it. Flawless communication from start to finish.", testiR1: "Owner · MineCraftBR Network",
-      testiQ2: "Clean code, clear English and on-time delivery. Would hire Vitor again in a heartbeat.", testiR2: "CTO · Nordic Apps",
       procEyebrow: "How I work", procTitle: "No surprises along the way.",
       procSub: "Every project follows the same process, from first contact to support after delivery.",
       procG1: "Reply within 24h", procG2: "Scope and deadline in writing", procG3: "Support after delivery",
