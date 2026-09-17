@@ -457,11 +457,18 @@
     /* fractional position mirror: some mobile browsers (iOS Safari) round
        scrollLeft to whole pixels, so "+= 0.5" would never leave 0 */
     var pos = 0;
+    /* speed in CSS px per second (frame-rate independent); faster on touch
+       devices, where whole-pixel scrolling makes slow speeds look choppy */
+    var touch = !!(window.matchMedia && window.matchMedia('(hover: none)').matches);
+    var speed = touch ? 60 : 30;
+    var last = 0;
     var loop = function (now) {
+      var dt = last ? Math.min(0.05, (now - last) / 1000) : 0;
+      last = now;
       if (!reduceMotion && !paused && !drag && now > resume) {
         /* a whole-pixel gap means the user (or wrap) moved the rail: follow it */
         if (Math.abs(el.scrollLeft - pos) >= 1) pos = el.scrollLeft;
-        pos += 0.5;
+        pos += speed * dt;
         el.scrollLeft = pos;
       } else {
         pos = el.scrollLeft;
