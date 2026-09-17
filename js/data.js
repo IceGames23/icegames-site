@@ -126,7 +126,7 @@ window.IG_DATA = {
       heroSub: "Sou Vitor Albert, também conhecido como IceGames. Desenho o jogo e construo a engenharia que o mantém de pé: servidores de Minecraft, eventos ao vivo e software com IA que rodam com centenas de jogadores ao mesmo tempo.",
       heroCta1: "Ver projetos", heroCta2: "Vamos conversar",
       statPlayers: "Jogadores impactados", statProjects: "Projetos entregues", statRating: "Avaliação média", statUptime: "Uptime dos servidores",
-      servEyebrow: "O que eu construo", servTitle: "Do documento de design ao servidor no ar.",
+      servEyebrow: "O que eu construo", servTitle: "Do documento de design ao projeto no ar.",
       servSub: "Quatro frentes de trabalho. Cada uma com um projeto entregue que você pode abrir e conferir agora.",
       servProof: "Ver a prova",
       serv1Title: "Game design e narrativa", serv1Model: "Projeto fechado ou consultoria",
