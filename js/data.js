@@ -99,10 +99,10 @@ window.IG_DATA = {
 
   /* Services: n selects STR keys serv{n}Title/Model/Promise/Desc; proof = project id opened by "See the proof" */
   SERVICES: [
-    { n: 1, proof: "dinosaurs",  tags: ["Game Design", "GDD", "Narrativa"] },
-    { n: 2, proof: "afterlands", tags: ["Java", "Spigot / Paper", "Redis"] },
+    { n: 1, proof: "dinosaurs",  tags: ["Game Design", "GDD", "Narrativa", "Escrita criativa"] },
+    { n: 2, proof: "afterlands", tags: ["Java / Kotlin", "Spigot / Paper", "MySQL / MariaDB", "Redis"] },
     { n: 3, proof: "highschool", tags: ["Kubernetes", "Pterodactyl", "Monitoramento", "Segurança", "DevOps"] },
-    { n: 4, proof: "cortex",     tags: ["Java / Spring", "Python", "RAG", "Vue"] },
+    { n: 4, proof: "cortex",     tags: ["Java / Spring", "Python", "RAG", "Web Design", "Vue"] },
   ],
 
   /* Tag / metric words written in PT that get translated when lang === "en" */
@@ -110,6 +110,7 @@ window.IG_DATA = {
     "Arquitetura": "Architecture",
     "Eventos ao vivo": "Live events",
     "Narrativa": "Narrative",
+    "Escrita criativa": "Creative writing",
     "Teste de carga": "Load testing",
     "Monitoramento": "Monitoring",
     "Segurança": "Security",
@@ -144,7 +145,7 @@ window.IG_DATA = {
       serv3Desc: "Kubernetes, painéis de servidores de jogos (Pterodactyl e similares), pipelines de deploy, monitoramento com alertas e hardening de segurança. Dimensiono para o pico, testo com carga antes de ir ao ar e mantenho tudo observável. Já rodei evento ao vivo com 350+ jogadores simultâneos sem queda.",
       serv4Title: "Software, IA e web", serv4Model: "Projeto fechado ou mensal",
       serv4Promise: "A parte chata roda sozinha, com resposta certa e rastreável.",
-      serv4Desc: "Aplicações Java/Spring e Python, bots com RAG sobre a sua base de conhecimento, integrações com modelos de linguagem, sites e painéis administrativos.",
+      serv4Desc: "Aplicações Java/Spring e Python, bots com RAG sobre a sua base de conhecimento, integrações com modelos de linguagem, e web design de ponta a ponta: identidade visual, landing pages, sites institucionais e painéis administrativos.",
       projEyebrow: "Projetos em destaque", projTitle: "Trabalho recente.",
       filterAll: "Todos", filterMc: "Minecraft", filterGd: "Game Design", filterAi: "IA / Software",
       projDetails: "Ver detalhes", projDrop: "Arraste um screenshot", projVideo: "Espaço para vídeo", projEmpty: "Nenhum projeto nesta categoria ainda. Volte em breve.",
@@ -204,7 +205,7 @@ window.IG_DATA = {
       serv3Desc: "Kubernetes, game server panels (Pterodactyl and similar), deploy pipelines, monitoring with alerts and security hardening. I size for the peak, load-test before going live and keep everything observable. Already ran a live event with 350+ concurrent players with no downtime.",
       serv4Title: "Software, AI and web", serv4Model: "Fixed project or monthly",
       serv4Promise: "The tedious part runs itself, with answers that are correct and traceable.",
-      serv4Desc: "Java/Spring and Python applications, bots with RAG over your knowledge base, language-model integrations, websites and admin panels.",
+      serv4Desc: "Java/Spring and Python applications, bots with RAG over your knowledge base, language-model integrations, and end-to-end web design: visual identity, landing pages, company websites and admin panels.",
       projEyebrow: "Featured projects", projTitle: "Recent work.",
       filterAll: "All", filterMc: "Minecraft", filterGd: "Game Design", filterAi: "AI / Software",
       projDetails: "View details", projDrop: "Drop a screenshot", projVideo: "Video goes here", projEmpty: "No projects in this category yet. Check back soon.",
