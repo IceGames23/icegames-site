@@ -438,7 +438,7 @@
   /* An auto-scrolling, infinitely wrapping horizontal rail. The track holds
      its items twice; wrap() jumps by half the track so the loop is seamless.
      Mouse: hover pauses, press-and-drag scrolls. Touch: native scrolling. */
-  function makeRail(el, track) {
+  function makeRail(el, track, pauseSel) {
     if (!el || !track) return;
     var drag = null, resume = 0, paused = false;
 
@@ -485,8 +485,11 @@
        browser's hover state, which can be stale right after load) and cleared when the page
        scrolls, so it cannot stay stuck with the cursor parked somewhere. Touch devices never pause. */
     if (!touch) {
-      el.addEventListener('mouseenter', function () { paused = true; });
-      el.addEventListener('mousemove', function () { paused = true; });
+      /* pauseSel: pause only while the mouse is over a matching child (e.g. a logo link);
+         without it, hovering anywhere on the rail pauses (reading testimonials) */
+      var over = function (e) { return pauseSel ? !!(e.target.closest && e.target.closest(pauseSel)) : true; };
+      el.addEventListener('mouseover', function (e) { paused = over(e); });
+      el.addEventListener('mousemove', function (e) { paused = over(e); });
       el.addEventListener('mouseleave', function () { paused = false; });
       window.addEventListener('scroll', function () { paused = false; }, { passive: true });
     }
@@ -520,7 +523,7 @@
 
   function initRail() {
     makeRail($('#testi-rail'), $('#testimonials'));
-    makeRail($('.clients-mask'), $('#clients-rail'));
+    makeRail($('.clients-mask'), $('#clients-rail'), '.client');
   }
 
   /* ---------- events ---------- */
