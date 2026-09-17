@@ -175,16 +175,135 @@
     renderForm();
   }
 
-  /* ---------- modals (Task 7) ---------- */
-  function renderModal() { /* filled in Task 7 */ }
-  function openModal(id) { /* filled in Task 7 */ }
-  function closeModal() { /* filled in Task 7 */ }
-  function openDiscord() { /* filled in Task 7 */ }
-  function closeDiscord() { /* filled in Task 7 */ }
+  /* ---------- modals ---------- */
+  function syncScrollLock() {
+    document.body.style.overflow = (state.modalId || state.discordOpen) ? 'hidden' : '';
+  }
 
-  /* ---------- form (Task 7) ---------- */
-  function renderForm() { /* filled in Task 7 */ }
-  function bindForm() { /* filled in Task 7 */ }
+  function mediaHtml(m, p, isHero) {
+    var alt = esc(p.title);
+    if (m.type === 'youtube') {
+      return '<a class="yt" href="https://www.youtube.com/watch?v=' + esc(m.yt) + '" target="_blank" rel="noopener">' +
+        '<img src="https://i.ytimg.com/vi/' + esc(m.yt) + '/maxresdefault.jpg" alt="' + alt + '">' +
+        '<span class="yt-badge"><span>▶ YouTube</span></span></a>';
+    }
+    if (m.type === 'file') {
+      return '<video src="' + esc(m.src) + '" controls playsinline preload="metadata"></video>';
+    }
+    if (m.type === 'scroll') {
+      var cap = (!isHero && m.caption) ? '<span class="media-caption">' + esc(L(m.caption)) + '</span>' : '';
+      return '<div class="scrollbox"><img src="' + esc(m.src) + '" alt="' + alt + '"></div>' + cap;
+    }
+    /* image */
+    return '<img class="media-img" src="' + esc(m.src) + '" alt="' + alt + '" style="aspect-ratio:' + esc(m.aspect || '16 / 9') + '">';
+  }
+
+  function renderModal() {
+    var overlay = $('#project-modal');
+    var dialog = $('.dialog', overlay);
+    var p = null;
+    for (var i = 0; i < D.PROJECTS.length; i++) if (D.PROJECTS[i].id === state.modalId) p = D.PROJECTS[i];
+    if (!p) { overlay.hidden = true; dialog.innerHTML = ''; return; }
+
+    var media = p.media || [];
+    var hero = media[0];
+    var gallery = media.slice(1);
+    var heroCaption = (hero && hero.caption) ? L(hero.caption) : '';
+
+    dialog.innerHTML =
+      '<div class="pm-media">' +
+        (hero ? mediaHtml(hero, p, true) : '') +
+        '<span class="pm-badge">' + esc(projectCategory(p)) + '</span>' +
+        '<button class="pm-close" type="button" data-close aria-label="' + esc(t('dcClose')) + '">' + ICON_CLOSE + '</button>' +
+      '</div>' +
+      '<div class="pm-body">' +
+        '<div class="pm-title"><h3 id="pm-title">' + esc(p.title) + '</h3><span class="pm-year">' + esc(L(p.year)) + '</span></div>' +
+        (heroCaption ? '<span class="pm-caption">' + esc(heroCaption) + '</span>' : '') +
+        '<p class="pm-long">' + esc(L(p.long)) + '</p>' +
+        (gallery.length
+          ? '<div class="gallery">' + gallery.map(function (m) {
+              return '<div class="gallery-item' + (m.type === 'scroll' ? ' full' : '') + '">' + mediaHtml(m, p, false) + '</div>';
+            }).join('') + '</div>'
+          : '') +
+        '<div class="metrics">' + (p.metrics || []).map(function (m) {
+          return '<div class="metric"><div class="metric-value">' + esc(tr(m.value)) + '</div><div class="metric-label">' + esc(L(m.label)) + '</div></div>';
+        }).join('') + '</div>' +
+        '<div class="tags">' + (p.tags || []).map(function (x) { return '<span class="tag">' + esc(tr(x)) + '</span>'; }).join('') + '</div>' +
+        '<div class="pm-actions">' +
+          '<a class="btn btn-primary" href="#contato" data-close>' + esc(t('modalCta')) + ICON_ARROW_16 + '</a>' +
+          (p.link ? '<a class="btn btn-ghost" href="' + esc(p.link.url) + '" target="_blank" rel="noopener">' + esc(L(p.link.label)) + ICON_EXT + '</a>' : '') +
+        '</div>' +
+      '</div>';
+    overlay.hidden = false;
+    overlay.setAttribute('aria-labelledby', 'pm-title');
+    overlay.scrollTop = 0;
+    dialog.scrollTop = 0;
+  }
+
+  function openModal(id) { state.modalId = id; renderModal(); syncScrollLock(); }
+  function closeModal() {
+    if (!state.modalId) return;
+    state.modalId = null; renderModal(); syncScrollLock();
+  }
+  function openDiscord() { state.discordOpen = true; $('#discord-modal').hidden = false; syncScrollLock(); }
+  function closeDiscord() {
+    if (!state.discordOpen) return;
+    state.discordOpen = false; $('#discord-modal').hidden = true; syncScrollLock();
+  }
+
+  /* ---------- form ---------- */
+  var sendTimer = null;
+  var FIELDS = ['name', 'email', 'message'];
+
+  function field(name) { return $('#contact-form [name="' + name + '"]'); }
+
+  function renderForm() {
+    FIELDS.forEach(function (k) {
+      $('#contact-form [data-error="' + k + '"]').textContent = state.errors[k] ? t(state.errors[k]) : '';
+    });
+    $('#submit-label').textContent = t(state.sending ? 'formSending' : 'formSubmit');
+    $('#submit-spinner').hidden = !state.sending;
+    $('#submit-arrow').hidden = state.sending;
+  }
+
+  function validate() {
+    var errors = {};
+    if (!field('name').value.trim()) errors.name = 'errName';
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(field('email').value.trim())) errors.email = 'errEmail';
+    if (field('message').value.trim().length < 10) errors.message = 'errMessage';
+    return errors;
+  }
+
+  function bindForm() {
+    var form = $('#contact-form');
+    form.addEventListener('input', function (e) {
+      var k = e.target.getAttribute('name');
+      if (k && state.errors[k]) { delete state.errors[k]; renderForm(); }
+    });
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (state.sending) return;
+      state.errors = validate();
+      renderForm();
+      if (Object.keys(state.errors).length) return;
+      state.sending = true;
+      renderForm();
+      /* Design behavior (user decision): no backend — after a short "sending" state,
+         fall back to the Discord modal. */
+      sendTimer = setTimeout(function () {
+        state.sending = false;
+        renderForm();
+        openDiscord();
+      }, 1600);
+    });
+    $('#form-reset').addEventListener('click', function () {
+      form.reset();
+      state.errors = {};
+      $('#form-success').hidden = true;
+      form.hidden = false;
+      renderForm();
+    });
+  }
 
   /* ---------- splash · reveal · snow · rail (Task 8) ---------- */
   function initSplash() { $('#splash').setAttribute('data-hide', 'true'); /* replaced in Task 8 */ }
