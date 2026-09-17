@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="icon" href="assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&amp;family=Instrument+Serif:ital@0;1&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<script src="image-slot.js"></script>
+<style>
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: #0B0B0C; overflow-x: hidden; }
+  ::selection { background: var(--ac, #6ED4F2); color: #0B0B0C; }
+  a { color: var(--ac, #6ED4F2); text-decoration: none; }
+  a:hover { color: #F4F1EA; }
+  @keyframes ig-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  .ig-splash[data-hide="true"] { opacity: 0; visibility: hidden; pointer-events: none; }
+  @keyframes ig-load { 0% { transform: translateX(-100%); } 100% { transform: translateX(350%); } }
+  @keyframes ig-spin { to { transform: rotate(360deg); } }
+  @keyframes ig-blink { 0%, 60% { opacity: 1; } 61%, 100% { opacity: 0.15; } }
+  .is-reveal { opacity: 0; transform: translateY(26px); will-change: opacity, transform; }
+  .is-reveal.is-in { opacity: 1; transform: none; transition: opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1); }
+  .wk-row:hover { background: var(--ac, #6ED4F2) !important; }
+  .wk-row:hover * { color: #0B0B0C !important; opacity: 1 !important; border-color: #0B0B0C !important; }
+  .wk-row:hover .wk-arrow { transform: translateX(8px); }
+  .ig-testi-mask { mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent); -webkit-mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent); }
+  .ig-clientmask { mask-image: linear-gradient(90deg, transparent, #000 6%, #000 90%, transparent); -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 90%, transparent); }
+  .ig-clientmask:hover .ig-clientrail { animation-play-state: paused; }
+  @media (prefers-reduced-motion: reduce) { .ig-clientrail { animation: none !important; } }
+  .ig-testi-mask::-webkit-scrollbar { display: none; }
+  .ig-testi-mask:active { cursor: grabbing; }
+  .ig-testi-mask figure { user-select: none; -webkit-user-select: none; }
+  .ig-chip[data-active="true"] { color: #0B0B0C !important; background: var(--ac, #6ED4F2) !important; border-color: var(--ac, #6ED4F2) !important; }
+  .ig-lang[data-active="true"] { color: var(--ac, #6ED4F2) !important; }
+  .ig-flip-card:hover .ig-flip { transform: rotateY(180deg) !important; }
+  image-slot { --is-radius: 0px; }
+  @media (max-width: 1080px) {
+    .ig-nav { display: none !important; }
+  }
+  @media (max-width: 900px) {
+    .ig-two, .ig-split, .ig-contact { grid-template-columns: 1fr !important; }
+    .ig-meta { display: none !important; }
+    .wk-row { grid-template-columns: 44px 1fr !important; row-gap: 6px !important; }
+    .wk-hidemob { display: none !important; }
+    .ig-steps { grid-template-columns: 1fr 1fr !important; }
+  }
+  @media (max-width: 620px) {
+    .ig-stats { grid-template-columns: 1fr 1fr !important; }
+    .ig-steps { grid-template-columns: 1fr !important; }
+  }
+</style>
+</helmet>
+
+<div ref="{{ rootRef }}" style="background: #0B0B0C; color: #F4F1EA; font-family: 'Bricolage Grotesque', system-ui, sans-serif; -webkit-font-smoothing: antialiased;">
+
+  <div class="ig-splash" data-hide="{{ ready }}" style="position: fixed; inset: 0; z-index: 200; background: #0B0B0C; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px; transition: opacity .55s ease, visibility .55s ease;">
+    <span style="font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; letter-spacing: 0.34em; text-transform: uppercase; color: #F4F1EA;">IceGames</span>
+    <span style="display: block; width: 170px; height: 2px; background: #26262A; overflow: hidden;">
+      <span style="display: block; width: 40%; height: 100%; background: var(--ac, #6ED4F2); animation: ig-load 1.15s cubic-bezier(.65,0,.35,1) infinite;"></span>
+    </span>
+  </div>
+
+  <canvas ref="{{ snowRef }}" aria-hidden="true" style="position: fixed; inset: 0; width: 100%; height: 100%; z-index: 40; pointer-events: none; mix-blend-mode: screen;"></canvas>
+
+
+  <header style="position: sticky; top: 0; z-index: 50; background: rgba(11,11,12,0.82); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid #26262A;">
+    <div style="max-width: 1320px; margin: 0 auto; padding: 0 clamp(20px, 4vw, 56px); height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 24px;">
+      <a href="#topo" style="display: inline-flex; align-items: center; gap: 10px; color: #F4F1EA;">
+        <span style="font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase;">ICEGAMES.ME</span>
+      </a>
+      <nav class="ig-nav" style="display: flex; align-items: center; gap: clamp(18px, 2vw, 28px); white-space: nowrap; font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase;">
+        <a href="#trabalho" style="color: #8F8C85;" style-hover="color: #F4F1EA;">{{ t.navProjects }}</a>
+        <a href="#servicos" style="color: #8F8C85;" style-hover="color: #F4F1EA;">{{ t.navServices }}</a>
+        <a href="#processo" style="color: #8F8C85;" style-hover="color: #F4F1EA;">{{ t.navProcess }}</a>
+        <a href="#sobre" style="color: #8F8C85;" style-hover="color: #F4F1EA;">{{ t.navAbout }}</a>
+        <a href="#contato" style="color: #8F8C85;" style-hover="color: #F4F1EA;">{{ t.navContact }}</a>
+      </nav>
+      <div style="display: flex; align-items: center; gap: 18px; font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.1em;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <button class="ig-lang" data-active="{{ isEn }}" onClick="{{ setEn }}" style="background: none; border: none; padding: 0; cursor: pointer; font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.1em; color: #8F8C85;" style-hover="color: #F4F1EA;">EN</button>
+          <span style="color: #3A3A3F;">/</span>
+          <button class="ig-lang" data-active="{{ isPt }}" onClick="{{ setPt }}" style="background: none; border: none; padding: 0; cursor: pointer; font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.1em; color: #8F8C85;" style-hover="color: #F4F1EA;">PT</button>
+        </div>
+        <a href="#contato" style="display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; color: #0B0B0C; background: var(--ac, #6ED4F2); padding: 9px 16px; font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700;" style-hover="color: #0B0B0C; background: #F4F1EA;">{{ t.navCta }}</a>
+      </div>
+    </div>
+  </header>
+
+  <section id="topo" style="position: relative; border-bottom: 1px solid #26262A; overflow: hidden;">
+    <div style="position: absolute; top: -260px; right: -180px; width: 720px; height: 720px; background: radial-gradient(circle, rgba(110,212,242,0.12), transparent 62%); pointer-events: none;"></div>
+    <div style="position: relative; max-width: 1320px; margin: 0 auto; padding: clamp(56px, 9vw, 120px) clamp(20px, 4vw, 56px) clamp(40px, 5vw, 64px); display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 48px; align-items: end;">
+      <div style="min-width: 0;">
+        <div style="display: inline-flex; align-items: center; gap: 12px; font-family: 'JetBrains Mono', monospace; font-size: clamp(11.5px, 1.1vw, 13px); letter-spacing: 0.16em; text-transform: uppercase; color: #F4F1EA; margin-bottom: clamp(24px, 3vw, 34px);">
+          <span style="width: 7px; height: 7px; border-radius: 50%; background: var(--ac, #6ED4F2); animation: ig-blink 2.4s steps(1, end) infinite;"></span>
+          {{ t.heroRole }}
+        </div>
+        <h1 style="font-size: clamp(2.9rem, 8.4vw, 7.4rem); font-weight: 800; line-height: 0.92; letter-spacing: -0.045em; margin: 0; text-wrap: balance;">
+          {{ t.heroH1a }}<em style="font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-style: italic; letter-spacing: -0.01em; color: var(--ac, #6ED4F2);">{{ t.heroH1b }}</em>.
+        </h1>
+        <p style="font-size: clamp(1.02rem, 1.5vw, 1.25rem); line-height: 1.55; color: #A8A49C; max-width: 752px; margin: clamp(26px, 3vw, 38px) 0 0; text-wrap: pretty">{{ t.heroSub }}</p>
+        <div style="display: flex; gap: 14px; flex-wrap: wrap; margin-top: 36px; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700;">
+          <a href="#trabalho" style="color: #0B0B0C; background: var(--ac, #6ED4F2); padding: 15px 24px;" style-hover="color: #0B0B0C; background: #F4F1EA;">{{ t.heroCta1 }}</a>
+          <a href="#contato" style="color: #F4F1EA; border: 1px solid #3A3A3F; padding: 14px 23px;" style-hover="color: #0B0B0C; background: #F4F1EA; border-color: #F4F1EA;">{{ t.heroCta2 }}</a>
+        </div>
+      </div>
+    </div>
+
+    <div style="position: relative; border-top: 1px solid #26262A;">
+      <div style="display: flex; align-items: center; gap: clamp(20px, 3vw, 40px); padding: clamp(30px, 3.6vw, 44px) 0 clamp(30px, 3.6vw, 44px) clamp(20px, 4vw, 56px); overflow: hidden;">
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: #F4F1EA; white-space: nowrap; flex: none; border-left: 2px solid var(--ac, #6ED4F2); padding-left: 14px; line-height: 1.5;">{{ t.heroClients }}</span>
+        <div class="ig-clientmask" style="position: relative; flex: 1; min-width: 0; overflow: hidden;">
+          <div class="ig-clientrail" style="display: flex; align-items: center; width: max-content; animation: ig-marquee 36s linear infinite;">
+            <sc-for list="{{ clients }}" as="c" hint-placeholder-count="12">
+              <sc-if value="{{ c.hasLink }}" hint-placeholder-val="{{ true }}">
+                <a href="{{ c.href }}" target="_blank" rel="noopener" title="{{ c.name }}" style="display: block; width: {{ c.w }}; height: {{ c.h }}; flex: none; margin-right: clamp(28px, 4vw, 56px); opacity: 0.78; filter: grayscale(1) brightness(1.4) contrast(0.9); transition: filter .3s ease, opacity .3s ease;" style-hover="opacity: 1; filter: none;">
+                  <image-slot id="{{ c.id }}" src="{{ c.src }}" shape="rect" fit="contain" placeholder="{{ c.name }}" style="display: block; width: 100%; height: 100%; background: none; color: #8F8C85; pointer-events: none;"></image-slot>
+                </a>
+              </sc-if>
+              <sc-if value="{{ c.noLink }}" hint-placeholder-val="{{ false }}">
+                <div style="width: {{ c.w }}; height: {{ c.h }}; flex: none; margin-right: clamp(28px, 4vw, 56px); opacity: 0.78; filter: grayscale(1) brightness(1.4) contrast(0.9); transition: filter .3s ease, opacity .3s ease;" style-hover="opacity: 1; filter: none;">
+                  <image-slot id="{{ c.id }}" src="{{ c.src }}" shape="rect" fit="contain" placeholder="{{ c.name }}" style="display: block; width: 100%; height: 100%; background: none; color: #8F8C85;"></image-slot>
+                </div>
+              </sc-if>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="trabalho" data-reveal="" style="scroll-margin-top: 72px; border-bottom: 1px solid #26262A;">
+    <div style="max-width: 1320px; margin: 0 auto; padding: clamp(56px, 7vw, 96px) clamp(20px, 4vw, 56px) clamp(40px, 5vw, 64px);">
+      <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap;">
+        <div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ac, #6ED4F2); margin-bottom: 18px;">{{ t.projEyebrow }}</div>
+          <h2 style="font-size: clamp(2rem, 4.4vw, 3.4rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1; margin: 0;">{{ t.projTitle }}</h2>
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <sc-for list="{{ filters }}" as="f" hint-placeholder-count="3">
+            <button class="ig-chip" data-active="{{ f.active }}" onClick="{{ f.onClick }}" style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; letter-spacing: 0.12em; text-transform: uppercase; padding: 9px 15px; border: 1px solid #3A3A3F; background: none; color: #8F8C85; cursor: pointer; transition: color .18s ease, border-color .18s ease;" style-hover="color: #F4F1EA; border-color: #F4F1EA;">{{ f.label }}</button>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+    <div style="max-width: 1320px; margin: 0 auto; padding: 0 clamp(20px, 4vw, 56px) clamp(56px, 7vw, 88px);">
+      <div style="border-top: 1px solid #26262A;">
+        <sc-for list="{{ projects }}" as="project" hint-placeholder-count="6">
+          <button class="wk-row" onClick="{{ project.onOpen }}" style="display: grid; grid-template-columns: 76px minmax(0, 1fr) 160px 72px 40px; align-items: center; width: 100%; text-align: left; gap: 16px; padding: clamp(20px, 2.6vw, 30px) clamp(10px, 2vw, 22px); background: none; border: none; border-bottom: 1px solid #26262A; color: #F4F1EA; cursor: pointer; font-family: inherit; transition: background .2s ease;">
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.1em; color: #8F8C85;">{{ project.num }}</span>
+            <span style="font-size: clamp(1.5rem, 3.4vw, 2.6rem); font-weight: 800; letter-spacing: -0.035em; line-height: 1.05; min-width: 0;">{{ project.title }}</span>
+            <span class="wk-hidemob" style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; letter-spacing: 0.12em; text-transform: uppercase; color: #8F8C85;">{{ project.categoryLabel }}</span>
+            <span class="wk-hidemob" style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #8F8C85;">{{ project.year }}</span>
+            <span class="wk-arrow wk-hidemob" style="display: inline-flex; justify-content: flex-end; color: var(--ac, #6ED4F2); transition: transform .28s cubic-bezier(.16,1,.3,1);">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+            </span>
+          </button>
+        </sc-for>
+      </div>
+      <sc-if value="{{ noProjects }}" hint-placeholder-val="{{ false }}">
+        <p style="text-align: center; color: #8F8C85; padding: 56px 0; font-family: 'JetBrains Mono', monospace; font-size: 13px;">{{ t.projEmpty }}</p>
+      </sc-if>
+    </div>
+  </section>
+
+  <section id="servicos" data-reveal="" style="scroll-margin-top: 72px; border-bottom: 1px solid #26262A;">
+    <div style="max-width: 1320px; margin: 0 auto; padding: clamp(56px, 7vw, 96px) clamp(20px, 4vw, 56px);">
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ac, #6ED4F2); margin-bottom: 18px;">{{ t.servEyebrow }}</div>
+      <h2 style="font-size: clamp(2rem, 4.4vw, 3.4rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1.02; margin: 0 0 16px; max-width: 760px;">{{ t.servTitle }}</h2>
+      <p style="font-size: clamp(1rem, 1.4vw, 1.15rem); color: #A8A49C; line-height: 1.6; max-width: 620px; margin: 0 0 clamp(40px, 5vw, 64px);">{{ t.servSub }}</p>
+      <div class="ig-two" style="display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px, 4vw, 56px) clamp(32px, 4vw, 64px);">
+        <sc-for list="{{ services }}" as="s" hint-placeholder-count="4">
+          <div style="border-top: 1px solid #3A3A3F; padding-top: 26px; display: flex; flex-direction: column;">
+            <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 18px;">
+              <span style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 3.2rem; line-height: 1; color: var(--ac, #6ED4F2);">{{ s.num }}</span>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #8F8C85; text-align: right;">{{ s.model }}</span>
+            </div>
+            <h3 style="font-size: clamp(1.4rem, 2.2vw, 1.85rem); font-weight: 800; letter-spacing: -0.03em; margin: 0 0 12px;">{{ s.title }}</h3>
+            <p style="color: #F4F1EA; font-size: 1.05rem; line-height: 1.5; margin: 0 0 12px; max-width: 460px;">{{ s.promise }}</p>
+            <p style="color: #A8A49C; line-height: 1.65; margin: 0 0 22px; max-width: 460px;">{{ s.desc }}</p>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; letter-spacing: 0.1em; text-transform: uppercase; color: #8F8C85;">
+              <sc-for list="{{ s.tags }}" as="tag" hint-placeholder-count="3">
+                <span style="border: 1px solid #26262A; padding: 6px 12px;">{{ tag.label }}</span>
+              </sc-for>
+            </div>
+            <button onClick="{{ s.onOpen }}" style="align-self: flex-start; margin-top: auto; display: inline-flex; align-items: center; gap: 9px; background: none; border: none; padding: 0; cursor: pointer; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ac, #6ED4F2);" style-hover="color: #F4F1EA;">
+              {{ s.proofLabel }}
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+            </button>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <section id="sobre" data-reveal="" style="scroll-margin-top: 72px; border-bottom: 1px solid #26262A;">
+    <div class="ig-split" style="max-width: 1320px; margin: 0 auto; padding: clamp(56px, 7vw, 96px) clamp(20px, 4vw, 56px); display: grid; grid-template-columns: 0.78fr 1.22fr; gap: clamp(36px, 5vw, 72px); align-items: center;">
+      <div>
+        <div class="ig-flip-card" style="perspective: 1400px; width: 100%; max-width: 420px; margin: 0 auto; aspect-ratio: 1 / 1;">
+          <div class="ig-flip" style="position: relative; width: 100%; height: 100%; transition: transform .9s cubic-bezier(.16,1,.3,1); transform-style: preserve-3d;">
+            <div style="position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; overflow: hidden; border: 1px solid #3A3A3F;">
+              <img src="assets/vitor-avatar.png" alt="Vitor Albert, IceGames" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+            </div>
+            <div style="position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; transform: rotateY(180deg); overflow: hidden; border: 1px solid #3A3A3F;">
+              <img src="assets/vitor-photo.jpeg" alt="Vitor Albert" style="width: 100%; height: 100%; object-fit: cover; display: block; filter: grayscale(1) contrast(1.05);">
+            </div>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 9px; margin-top: 14px; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; letter-spacing: 0.12em; text-transform: uppercase; color: #8F8C85;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path></svg>
+          {{ t.aboutHint }}
+        </div>
+      </div>
+      <div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ac, #6ED4F2); margin-bottom: 18px;">{{ t.aboutEyebrow }}</div>
+        <h2 style="font-size: clamp(1.9rem, 3.8vw, 3rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1.02; margin: 0 0 26px;">{{ t.aboutTitle }}</h2>
+        <p style="font-family: 'Instrument Serif', Georgia, serif; font-size: clamp(1.4rem, 2.4vw, 2rem); font-style: italic; line-height: 1.32; color: #F4F1EA; margin: 0 0 22px; text-wrap: pretty;">{{ t.aboutLead }}</p>
+        <p style="color: #A8A49C; line-height: 1.7; margin: 0 0 30px; max-width: 620px; text-wrap: pretty;">{{ t.aboutBody }}</p>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; border-top: 1px solid #26262A; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #A8A49C; max-width: 620px;">
+          <div style="padding: 14px 16px 14px 0; border-bottom: 1px solid #26262A; border-right: 1px solid #26262A;">{{ t.aboutFact1 }}</div>
+          <div style="padding: 14px 0 14px 16px; border-bottom: 1px solid #26262A;">{{ t.aboutFact2 }}</div>
+          <div style="padding: 14px 16px 14px 0; border-bottom: 1px solid #26262A; border-right: 1px solid #26262A;">{{ t.aboutFact3 }}</div>
+          <div style="padding: 14px 0 14px 16px; border-bottom: 1px solid #26262A;">{{ t.aboutFact4 }}</div>
+        </div>
+        
+      </div>
+    </div>
+  </section>
+
+  <sc-if value="{{ showTestimonials }}" hint-placeholder-val="{{ true }}">
+    <section data-reveal="" style="border-bottom: 1px solid #26262A;">
+      <div style="max-width: 1320px; margin: 0 auto; padding: clamp(56px, 7vw, 96px) clamp(20px, 4vw, 56px) clamp(32px, 3.5vw, 44px); display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap;">
+        <div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ac, #6ED4F2); margin-bottom: 18px;">{{ t.testiEyebrow }}</div>
+          <h2 style="font-size: clamp(2rem, 4.4vw, 3.4rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1; margin: 0;">{{ t.testiTitle }}</h2>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; letter-spacing: 0.12em; text-transform: uppercase; color: #8F8C85; padding-bottom: 6px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 7 4 12l4 5M16 7l4 5-4 5"></path></svg>
+          {{ t.testiDrag }}
+        </div>
+      </div>
+      <div class="ig-testi-mask" ref="{{ testiRef }}" style="position: relative; overflow-x: auto; overflow-y: hidden; cursor: grab; padding-bottom: clamp(56px, 7vw, 96px); scrollbar-width: none; -ms-overflow-style: none; touch-action: pan-y;">
+        <div class="ig-testi-track" style="display: flex; width: max-content; padding-left: clamp(20px, 4vw, 56px);">
+          <sc-for list="{{ testimonials }}" as="q" hint-placeholder-count="10">
+            <figure style="margin: 0 clamp(32px, 4vw, 56px) 0 0; width: clamp(280px, 30vw, 420px); flex: none; border-top: 1px solid #3A3A3F; padding-top: 26px; display: flex; flex-direction: column; gap: 22px;">
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.14em; color: var(--ac, #6ED4F2);">{{ q.stars }}</span>
+              <blockquote style="font-family: 'Instrument Serif', Georgia, serif; font-size: clamp(1.3rem, 1.9vw, 1.7rem); font-style: italic; line-height: 1.35; margin: 0; color: #F4F1EA; text-wrap: pretty;">“{{ q.quote }}”</blockquote>
+              <figcaption style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; letter-spacing: 0.12em; text-transform: uppercase; color: #8F8C85; margin-top: auto;">{{ q.name }} · {{ q.role }}</figcaption>
+            </figure>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+  </sc-if>
+
+  <section id="processo" data-reveal="" style="scroll-margin-top: 72px; border-bottom: 1px solid #26262A;">
+    <div style="max-width: 1320px; margin: 0 auto; padding: clamp(56px, 7vw, 96px) clamp(20px, 4vw, 56px);">
+      <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; margin-bottom: clamp(36px, 4.5vw, 56px);">
+        <div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ac, #6ED4F2); margin-bottom: 18px;">{{ t.procEyebrow }}</div>
+          <h2 style="font-size: clamp(2rem, 4.4vw, 3.4rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1; margin: 0;">{{ t.procTitle }}</h2>
+        </div>
+        <p style="color: #A8A49C; line-height: 1.6; margin: 0; max-width: 380px; padding-bottom: 4px;">{{ t.procSub }}</p>
+      </div>
+      <div class="ig-steps" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: #26262A;">
+        <sc-for list="{{ steps }}" as="s" hint-placeholder-count="4">
+          <div style="background: #0B0B0C; padding: clamp(24px, 3vw, 34px) clamp(20px, 2.2vw, 28px); display: flex; flex-direction: column; gap: 14px;">
+            <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
+              <span style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 2.4rem; line-height: 1; color: var(--ac, #6ED4F2);">{{ s.num }}</span>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #8F8C85;">{{ s.meta }}</span>
+            </div>
+            <h3 style="font-size: 1.15rem; font-weight: 800; letter-spacing: -0.02em; margin: 0;">{{ s.title }}</h3>
+            <p style="color: #A8A49C; font-size: 0.95rem; line-height: 1.6; margin: 0;">{{ s.desc }}</p>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 12px 28px; margin-top: 26px; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; letter-spacing: 0.1em; text-transform: uppercase; color: #8F8C85;">
+        <span style="color: #F4F1EA;">✓ {{ t.procG1 }}</span>
+        <span style="color: #F4F1EA;">✓ {{ t.procG2 }}</span>
+        <span style="color: #F4F1EA;">✓ {{ t.procG3 }}</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="contato" data-reveal="" style="scroll-margin-top: 72px; border-bottom: 1px solid #26262A;">
+    <div class="ig-contact" style="max-width: 1320px; margin: 0 auto; padding: clamp(56px, 7vw, 100px) clamp(20px, 4vw, 56px); display: grid; grid-template-columns: 1.1fr 0.9fr; gap: clamp(40px, 5vw, 80px); align-items: start;">
+      <div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ac, #6ED4F2); margin-bottom: 18px;">{{ t.contactEyebrow }}</div>
+        <h2 style="font-size: clamp(2.2rem, 6vw, 4.6rem); font-weight: 800; letter-spacing: -0.045em; line-height: 0.96; margin: 0 0 22px;">{{ t.contactTitle }}</h2>
+        <p style="color: #A8A49C; font-size: clamp(1rem, 1.4vw, 1.15rem); line-height: 1.6; max-width: 420px; margin: 0 0 40px;">{{ t.contactSub }}</p>
+        <div style="display: flex; flex-direction: column; border-top: 1px solid #26262A; max-width: 460px;">
+          <a href="https://github.com/IceGames23" target="_blank" rel="noopener" style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 0; border-bottom: 1px solid #26262A; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #A8A49C;" style-hover="color: #F4F1EA;">
+            github.com/IceGames23
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"></path></svg>
+          </a>
+          <a href="https://www.linkedin.com/in/vitor-albert/" target="_blank" rel="noopener" style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 0; border-bottom: 1px solid #26262A; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #A8A49C;" style-hover="color: #F4F1EA;">
+            linkedin.com/in/vitor-albert
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"></path></svg>
+          </a>
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 0; border-bottom: 1px solid #26262A; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #A8A49C;">
+            Discord
+            <span style="color: var(--ac, #6ED4F2);">icegames</span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <sc-if value="{{ submitted }}" hint-placeholder-val="{{ false }}">
+          <div style="border: 1px solid #3A3A3F; padding: clamp(28px, 4vw, 44px); display: flex; flex-direction: column; gap: 16px;">
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ac, #6ED4F2);">✓ OK</div>
+            <h3 style="font-size: clamp(1.5rem, 2.6vw, 2rem); font-weight: 800; letter-spacing: -0.03em; margin: 0;">{{ t.successTitle }}</h3>
+            <p style="color: #A8A49C; line-height: 1.65; margin: 0;">{{ t.successText }}</p>
+            <button onClick="{{ resetForm }}" style="align-self: flex-start; margin-top: 6px; background: none; border: none; padding: 0; cursor: pointer; font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ac, #6ED4F2);" style-hover="color: #F4F1EA;">{{ t.successAgain }}</button>
+          </div>
+        </sc-if>
+        <sc-if value="{{ showForm }}" hint-placeholder-val="{{ true }}">
+          <form onSubmit="{{ onSubmit }}" style="display: flex; flex-direction: column; gap: 26px;">
+            <label style="display: block;">
+              <span style="display: block; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #8F8C85; margin-bottom: 10px;">{{ t.formName }}</span>
+              <input value="{{ form.name }}" onInput="{{ onName }}" placeholder="{{ t.formNamePh }}" style="width: 100%; box-sizing: border-box; padding: 10px 0; background: none; border: none; border-bottom: 1px solid #3A3A3F; color: #F4F1EA; font-family: 'Bricolage Grotesque', sans-serif; font-size: 17px; outline: none; transition: border-color .2s ease;" style-focus="border-color: var(--ac, #6ED4F2);">
+              <sc-if value="{{ errors.name }}" hint-placeholder-val="{{ false }}"><span style="display: block; margin-top: 8px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #FF8A6B;">{{ errors.name }}</span></sc-if>
+            </label>
+            <label style="display: block;">
+              <span style="display: block; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #8F8C85; margin-bottom: 10px;">{{ t.formEmail }}</span>
+              <input value="{{ form.email }}" onInput="{{ onEmail }}" type="email" placeholder="{{ t.formEmailPh }}" style="width: 100%; box-sizing: border-box; padding: 10px 0; background: none; border: none; border-bottom: 1px solid #3A3A3F; color: #F4F1EA; font-family: 'JetBrains Mono', monospace; font-size: 15px; outline: none; transition: border-color .2s ease;" style-focus="border-color: var(--ac, #6ED4F2);">
+              <sc-if value="{{ errors.email }}" hint-placeholder-val="{{ false }}"><span style="display: block; margin-top: 8px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #FF8A6B;">{{ errors.email }}</span></sc-if>
+            </label>
+            <label style="display: block;">
+              <span style="display: block; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #8F8C85; margin-bottom: 10px;">{{ t.formMessage }}</span>
+              <textarea value="{{ form.message }}" onInput="{{ onMessage }}" rows="4" placeholder="{{ t.formMsgPh }}" style="width: 100%; box-sizing: border-box; padding: 10px 0; background: none; border: none; border-bottom: 1px solid #3A3A3F; color: #F4F1EA; font-family: 'Bricolage Grotesque', sans-serif; font-size: 16px; line-height: 1.55; resize: vertical; outline: none; transition: border-color .2s ease;" style-focus="border-color: var(--ac, #6ED4F2);"></textarea>
+              <sc-if value="{{ errors.message }}" hint-placeholder-val="{{ false }}"><span style="display: block; margin-top: 8px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #FF8A6B;">{{ errors.message }}</span></sc-if>
+            </label>
+            <button type="submit" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 10px; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #0B0B0C; background: var(--ac, #6ED4F2); padding: 16px 26px; border: none; cursor: pointer; transition: background .2s ease;" style-hover="background: #F4F1EA;">
+              {{ submitLabel }}
+              <sc-if value="{{ sending }}" hint-placeholder-val="{{ false }}">
+                <span style="display: block; width: 14px; height: 14px; border: 2px solid rgba(11,11,12,0.25); border-top-color: #0B0B0C; border-radius: 50%; animation: ig-spin .7s linear infinite;"></span>
+              </sc-if>
+              <sc-if value="{{ notSending }}" hint-placeholder-val="{{ true }}">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+              </sc-if>
+            </button>
+          </form>
+        </sc-if>
+      </div>
+    </div>
+  </section>
+
+  <footer style="max-width: 1320px; margin: 0 auto; padding: 40px clamp(20px, 4vw, 56px) 48px; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.08em; color: #8F8C85;">
+    <span>© {{ year }} Vitor Albert · IceGames</span>
+    <span>{{ t.footerTagline }}</span>
+    <a href="#topo" style="color: #8F8C85;" style-hover="color: var(--ac, #6ED4F2);">↑ Top</a>
+  </footer>
+
+  <sc-if value="{{ discordOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeDiscord }}" style="position: fixed; inset: 0; z-index: 110; background: rgba(6,6,7,0.86); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; padding: 20px; overflow-y: auto;">
+      <div onClick="{{ stop }}" style="position: relative; width: 100%; max-width: 540px; max-height: 92vh; overflow-y: auto; flex: none; background: #131315; border: 1px solid #3A3A3F; padding: clamp(28px, 4vw, 44px); box-sizing: border-box;">
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #FF8A6B; margin-bottom: 16px;">{{ t.dcEyebrow }}</div>
+        <h3 style="font-size: clamp(1.5rem, 2.8vw, 2.1rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.05; margin: 0 0 14px;">{{ t.dcTitle }}</h3>
+        <p style="color: #A8A49C; line-height: 1.65; margin: 0 0 18px;">{{ t.dcText }}</p>
+        <div style="display: flex; align-items: center; gap: 12px; padding: 14px 18px; border: 1px solid var(--ac, #6ED4F2); margin-bottom: 26px;">
+          <svg width="23" height="23" viewBox="0 0 24 24" fill="var(--ac, #6ED4F2)" aria-hidden="true"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.0766.0766 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c1.8483 1.3568 3.6636 2.1801 5.4494 2.7259a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.198.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.795-.5458 3.6103-1.3691 5.4586-2.7259a.0766.0766 0 00.0312-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"></path></svg>
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 17px; font-weight: 700; letter-spacing: 0.06em; color: var(--ac, #6ED4F2);">{{ t.dcHandle }}</span>
+        </div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #8F8C85; margin-bottom: 14px;">{{ t.dcAskTitle }}</div>
+        <ul style="list-style: none; margin: 0 0 30px; padding: 0; display: flex; flex-direction: column; border-top: 1px solid #26262A;">
+          <sc-for list="{{ askItems }}" as="a" hint-placeholder-count="4">
+            <li style="display: flex; align-items: flex-start; gap: 12px; padding: 13px 0; border-bottom: 1px solid #26262A; color: #A8A49C; line-height: 1.5;">
+              <span style="color: var(--ac, #6ED4F2); font-family: 'JetBrains Mono', monospace; font-size: 12px; padding-top: 3px;">›</span>
+              {{ a.text }}
+            </li>
+          </sc-for>
+        </ul>
+        <button onClick="{{ closeDiscord }}" style="display: inline-flex; align-items: center; gap: 10px; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #0B0B0C; background: var(--ac, #6ED4F2); padding: 15px 24px; border: none; cursor: pointer;" style-hover="background: #F4F1EA;">{{ t.dcClose }}</button>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ modalOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeModal }}" style="position: fixed; inset: 0; z-index: 100; background: rgba(6,6,7,0.86); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; padding: 20px;">
+      <div onClick="{{ stop }}" style="position: relative; width: 100%; max-width: 680px; max-height: 92vh; overflow-y: auto; background: #131315; border: 1px solid #3A3A3F;">
+        <div style="position: relative; background: #0B0B0C;">
+          <sc-if value="{{ hero.isEmbed }}" hint-placeholder-val="{{ false }}">
+            <iframe src="{{ hero.url }}" title="{{ modalProject.title }}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; picture-in-picture" allowfullscreen="" style="display: block; width: 100%; aspect-ratio: 16 / 9; border: none;"></iframe>
+          </sc-if>
+          <sc-if value="{{ hero.isFile }}" hint-placeholder-val="{{ false }}">
+            {{ hero.node }}
+          </sc-if>
+          <sc-if value="{{ hero.isScroll }}" hint-placeholder-val="{{ false }}">
+            <div style="max-height: 460px; overflow-y: auto; background: #0B0B0C; border-bottom: 1px solid #26262A;">{{ hero.node }}</div>
+          </sc-if>
+          <sc-if value="{{ hero.isVideoEmpty }}" hint-placeholder-val="{{ false }}">
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; width: 100%; aspect-ratio: 16 / 9; border-bottom: 1px solid #26262A; color: #8F8C85; text-align: center; padding: 20px; box-sizing: border-box;">
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--ac, #6ED4F2)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m22 8-6 4 6 4V8z"></path><rect x="2" y="6" width="14" height="12" rx="2"></rect></svg>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; letter-spacing: 0.12em; text-transform: uppercase;">{{ t.projVideo }}</span>
+            </div>
+          </sc-if>
+          <sc-if value="{{ hero.isSlot }}" hint-placeholder-val="{{ true }}">
+            <image-slot id="{{ hero.id }}" src="{{ hero.src }}" shape="rect" fit="contain" placeholder="{{ t.projDrop }}" style="display: block; width: 100%; height: auto; aspect-ratio: {{ hero.aspect }}; background: #131316; color: #A8A49C;"></image-slot>
+          </sc-if>
+          <span style="position: absolute; top: 14px; left: 16px; z-index: 2; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; padding: 6px 12px; background: var(--ac, #6ED4F2); color: #0B0B0C; font-weight: 700;">{{ modalProject.categoryLabel }}</span>
+          <button onClick="{{ closeModal }}" aria-label="Fechar" style="position: absolute; top: 14px; right: 16px; z-index: 2; display: inline-flex; width: 34px; height: 34px; align-items: center; justify-content: center; background: #0B0B0C; border: 1px solid #3A3A3F; color: #F4F1EA; cursor: pointer;" style-hover="background: #F4F1EA; color: #0B0B0C;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+          </button>
+        </div>
+        <div style="padding: clamp(24px, 3.4vw, 36px);">
+          <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 16px;">
+            <h3 style="font-size: clamp(1.7rem, 3.4vw, 2.5rem); font-weight: 800; letter-spacing: -0.035em; line-height: 1; margin: 0;">{{ modalProject.title }}</h3>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #8F8C85; white-space: nowrap;">{{ modalProject.year }}</span>
+          </div>
+          <sc-if value="{{ hero.caption }}" hint-placeholder-val="{{ false }}">
+            <span style="display: block; margin: -8px 0 22px; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #8F8C85;">{{ hero.caption }}</span>
+          </sc-if>
+          <p style="color: #A8A49C; line-height: 1.7; margin: 0 0 28px;">{{ modalProject.long }}</p>
+          <sc-if value="{{ hasGallery }}" hint-placeholder-val="{{ false }}">
+            <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 0 0 28px;">
+              <sc-for list="{{ gallery }}" as="m" hint-placeholder-count="2">
+                <div style="grid-column: {{ m.span }}; position: relative;">
+                  <sc-if value="{{ m.isEmbed }}" hint-placeholder-val="{{ false }}">
+                    <iframe src="{{ m.url }}" title="{{ m.label }}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; picture-in-picture" allowfullscreen="" style="display: block; width: 100%; aspect-ratio: 16 / 9; border: 1px solid #26262A;"></iframe>
+                  </sc-if>
+                  <sc-if value="{{ m.isFile }}" hint-placeholder-val="{{ false }}">
+                    {{ m.node }}
+                  </sc-if>
+                  <sc-if value="{{ m.isScroll }}" hint-placeholder-val="{{ false }}">
+                    <div style="max-height: 420px; overflow-y: auto; border: 1px solid #26262A; background: #0B0B0C;">{{ m.node }}</div>
+                    <span style="display: block; margin-top: 8px; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #8F8C85;">{{ m.caption }}</span>
+                  </sc-if>
+                  <sc-if value="{{ m.isVideoEmpty }}" hint-placeholder-val="{{ false }}">
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; aspect-ratio: 16 / 9; border: 1px dashed #3A3A3F; color: #8F8C85; box-sizing: border-box;">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--ac, #6ED4F2)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m22 8-6 4 6 4V8z"></path><rect x="2" y="6" width="14" height="12" rx="2"></rect></svg>
+                      <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;">{{ t.projVideo }}</span>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ m.isSlot }}" hint-placeholder-val="{{ true }}">
+                    <image-slot id="{{ m.id }}" src="{{ m.src }}" shape="rect" fit="cover" placeholder="{{ t.projDrop }}" style="display: block; width: 100%; height: auto; aspect-ratio: {{ m.aspect }}; background: #131316; color: #A8A49C; border: 1px solid #26262A;"></image-slot>
+                  </sc-if>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+          <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid #26262A; border-bottom: 1px solid #26262A; margin-bottom: 26px;">
+            <sc-for list="{{ modalProject.metrics }}" as="m" hint-placeholder-count="3">
+              <div style="padding: 18px 16px 18px 0;">
+                <div style="font-size: 1.5rem; font-weight: 800; letter-spacing: -0.03em; color: var(--ac, #6ED4F2);">{{ m.value }}</div>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #8F8C85; margin-top: 6px;">{{ m.label }}</div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 30px; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; letter-spacing: 0.1em; text-transform: uppercase; color: #8F8C85;">
+            <sc-for list="{{ modalProject.tags }}" as="tag" hint-placeholder-count="3">
+              <span style="border: 1px solid #26262A; padding: 6px 12px;">{{ tag }}</span>
+            </sc-for>
+          </div>
+          <a href="#contato" onClick="{{ closeModal }}" style="display: inline-flex; align-items: center; gap: 10px; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #0B0B0C; background: var(--ac, #6ED4F2); padding: 15px 24px;" style-hover="color: #0B0B0C; background: #F4F1EA;">
+            {{ t.modalCta }}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+          </a>
+          <sc-if value="{{ modalProject.hasLink }}" hint-placeholder-val="{{ false }}">
+            <a href="{{ modalProject.linkUrl }}" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 10px; margin-left: 10px; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #F4F1EA; border: 1px solid #3A3A3F; padding: 14px 23px;" style-hover="color: #0B0B0C; background: #F4F1EA; border-color: #F4F1EA;">
+              {{ modalProject.linkLabel }}
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"></path></svg>
+            </a>
+          </sc-if>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;accentColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#6ED4F2&quot;,&quot;options&quot;:[&quot;#6ED4F2&quot;,&quot;#38BDF8&quot;,&quot;#A5E8FF&quot;,&quot;#F4F1EA&quot;],&quot;tsType&quot;:&quot;string&quot;},&quot;showTestimonials&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;snow&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  state = {
+    lang: (() => {
+      try { const s = localStorage.getItem("ig_lang"); if (s === "pt" || s === "en") return s; } catch (e) {}
+      const nav = (navigator.language || navigator.userLanguage || "").toLowerCase();
+      return nav.startsWith("pt") ? "pt" : "en";
+    })(),
+    filter: "Todos",
+    modalId: null,
+    counts: { players: 0, projects: 0, rating: 0, uptime: 0 },
+    form: { name: "", email: "", message: "" },
+    errors: {},
+    submitted: false,
+    discordOpen: false,
+    sending: false,
+    ready: false,
+  };
+
+  PROJECTS = [
+    {
+      id: "afterlands", category: "Minecraft", title: "AfterLands", label: "Minecraft / Website", year: { pt: "2023 - hoje", en: "2023 - present" },
+      short: { pt: "RankUP fundido com MMORPG: 4 anos de desenvolvimento e arquitetura para 500+ jogadores simultâneos.", en: "Prison fused with an MMORPG: 4 years of development and architecture for 500+ concurrent players." },
+      long: { pt: "Quatro anos de desenvolvimento contínuo em um servidor que funde RankUP com MMORPG. Atuei como game designer e arquiteto: desenhei a progressão, a economia e o ritmo das zonas, e construí a arquitetura que sustenta 500+ jogadores simultâneos sem perda de TPS. Do lado técnico, entreguei sistemas que normalmente não existem em Minecraft vanilla: animações procedurais em NPCs, cinematics com controle de câmera, blocos animados, dungeons instanciadas por grupo e uma camada de multilinguagem que atende a base inteira. Tudo com pipeline de deploy próprio, monitoramento e rollback. Também construí o site oficial do servidor, da identidade visual à loja e ao painel de contas, para que a primeira impressão do jogador fosse do mesmo nível do jogo.", en: "Four years of continuous development on a server that fuses Prison with an MMORPG. I worked as game designer and architect: I shaped progression, economy and zone pacing, and built the architecture that holds 500+ concurrent players with no TPS loss. On the technical side I shipped systems that simply don't exist in vanilla Minecraft: procedural NPC animation, camera-driven cinematics, animated blocks, per-party instanced dungeons and a localization layer serving the whole player base. All of it with its own deploy pipeline, monitoring and rollback. I also built the server's official website, from visual identity to store and account panel, so the player's first impression matched the quality of the game itself." },
+      tags: ["Java", "Game Design", "Arquitetura", "DevOps", "Website"],
+      link: { url: "https://www.afterlands.com", label: { pt: "Ver o site", en: "Visit website" } },
+      media: [
+        { type: "file", src: "assets/afterlands-cinematic.mp4" },
+        { type: "scroll", src: "assets/afterlands-site.png", caption: { pt: "Site oficial do AfterLands · role para ver a página inteira", en: "AfterLands official website · scroll to see the full page" } },
+        { type: "file", src: "assets/afterlands-circuit.mp4" },
+        { type: "file", src: "assets/afterlands-bus.mp4" },
+      ],
+      metrics: [{ value: "500+", label: { pt: "Jogadores simultâneos", en: "Concurrent players" } }, { value: "4 anos", label: { pt: "Em desenvolvimento", en: "In development" } }, { value: "19.9", label: { pt: "TPS em pico", en: "TPS at peak" } }],
+    },
+    {
+      id: "highschool", category: "Minecraft", title: "High School Event", label: "Minecraft / Youtuber", year: "2026",
+      short: { pt: "Evento de High School para o YouTuber Savvy Soggy, com 350+ jogadores simultâneos no ar ao mesmo tempo.", en: "High School event for YouTuber Savvy Soggy, with 350+ players live at the same time." },
+      long: { pt: "Evento ao vivo de High School construído para o YouTuber Savvy Soggy, com 350+ jogadores simultâneos dentro da experiência. Simulamos uma escola de verdade: aulas, turmas, intervalos, matérias com objetivos próprios e eventos disparados no ritmo da narração. Evento ao vivo não perdoa: ou aguenta a carga no minuto em que o vídeo sobe, ou não existe. Dimensionei a infraestrutura para o pico, testei com carga simulada antes do ar e mantive o servidor estável durante toda a gravação, em inglês e com o criador comandando o roteiro.", en: "A live High School event built for YouTuber Savvy Soggy, with 350+ players inside the experience at once. We simulated a real school: classes, homerooms, breaks, subjects with their own objectives and events fired in sync with the narration. A live event is unforgiving: either it holds the load the minute the video goes up, or it doesn't exist. I sized the infrastructure for the peak, load-tested it before going live, and kept the server stable through the entire shoot, in English, with the creator driving the script." },
+      tags: ["Java", "Game Design", "Eventos ao vivo", "DevOps"],
+      link: { url: "https://www.youtube.com/@savvysoggy", label: { pt: "Canal do Savvy Soggy", en: "Savvy Soggy's channel" } },
+      media: [{ type: "youtube", yt: "sB6nSmaSO9Q" }],
+      metrics: [{ value: "350+", label: { pt: "Jogadores simultâneos", en: "Concurrent players" } }, { value: "Ao vivo", label: { pt: "Evento gravado", en: "Filmed event" } }, { value: "0", label: { pt: "Quedas no ar", en: "Crashes on air" } }],
+    },
+    {
+      id: "tabiquest", category: "Minecraft", title: "TabiQuest", year: "2026",
+      short: { pt: "Servidor Cobblemon Survival RPG com campanha principal, diálogos e progressão autorais.", en: "Cobblemon Survival RPG server with an original main campaign, dialogue and progression." },
+      long: { pt: "Um servidor Cobblemon que traduz a sensação dos jogos clássicos de Pokémon para uma experiência de survival RPG. Conduzi o game design do zero: campanha principal com atos e reviravoltas, sistema de diálogos ramificados, líderes e desafios com curva de dificuldade calibrada, e uma progressão que amarra exploração, captura e economia no mesmo laço. O resultado é um servidor com narrativa própria, não uma coleção de plugins.", en: "A Cobblemon server that translates the feel of the classic Pokémon games into a survival RPG. I led game design from scratch: a main campaign with acts and turning points, a branching dialogue system, leaders and challenges on a calibrated difficulty curve, and progression that ties exploration, catching and economy into one loop. The result is a server with a narrative of its own, not a pile of plugins." },
+      tags: ["Game Design", "Cobblemon", "Narrativa", "Java"],
+      media: [{ type: "youtube", yt: "2x2jBJeE13U" }],
+      metrics: [{ value: "1", label: { pt: "Campanha autoral", en: "Original campaign" } }, { value: "RPG", label: { pt: "Survival + RPG", en: "Survival + RPG" } }, { value: "PT / EN", label: { pt: "Idiomas", en: "Languages" } }],
+    },
+    {
+      id: "cortex", category: "IA / Software", title: "CORTEX", year: "2025",
+      short: { pt: "Bot de Discord com RAG que responde jogadores e clientes automaticamente, 24 horas por dia.", en: "Discord bot with RAG that answers players and clients automatically, around the clock." },
+      long: { pt: "Bot de Discord em Python (Pycord) com uma camada de IA de verdade por trás: as respostas vêm de RAG sobre um banco de dados com as informações do servidor, então o bot responde com o conteúdo real do projeto em vez de improvisar. Ele atende mensagens diretas, identifica sozinho quando uma dúvida já está no FAQ e escala para humanos quando não está. Junto vêm os sistemas que mantêm a comunidade em pé: leveling, moderação e formulários em modals.", en: "A Python (Pycord) Discord bot with a real AI layer behind it: answers come from RAG over a database of server information, so the bot replies with the project's actual content instead of improvising. It handles direct messages, recognizes on its own when a question is already covered by the FAQ, and escalates to a human when it isn't. Alongside come the systems that keep a community running: leveling, moderation and modal-based forms." },
+      tags: ["Python", "Pycord", "RAG", "LLMs"],
+      media: [{ type: "scroll", src: "assets/cortex-demo.png", caption: { pt: "Resposta do CORTEX no Discord, com contexto buscado via RAG", en: "CORTEX answering in Discord, with context retrieved via RAG" } }],
+      metrics: [{ value: "24/7", label: { pt: "Atendimento", en: "Coverage" } }, { value: "RAG", label: { pt: "Respostas com fonte", en: "Sourced answers" } }, { value: "DM + FAQ", label: { pt: "Canais", en: "Channels" } }],
+    },
+    {
+      id: "dinosaurs", category: "Game Design", title: "Dinosaurs: Lost Depths", label: "Game Design / Marketplace", year: "2026",
+      short: { pt: "Game design completo de um addon de Marketplace para a Panda Studios, da ideação ao documento final.", en: "Full game design for a Marketplace addon for Panda Studios, from ideation to final document." },
+      long: { pt: "Serviço de game design de ponta a ponta para um addon de Marketplace da Panda Studios. Parti da ideação e entreguei o documento de design final: o jogador monta uma escavadeira gigante e desce até as Profundezas Perdidas em busca de dinossauros pré-históricos, em uma premissa inspirada em Viagem ao Centro da Terra. Defini o loop de escavação e exploração, a progressão da máquina, o bestiário e a estrutura de conteúdo, tudo pronto para o time de produção executar sem adivinhação.", en: "End-to-end game design for a Panda Studios Marketplace addon. I started at ideation and delivered the final design document: the player assembles a giant drilling rig and descends into the Lost Depths hunting prehistoric dinosaurs, on a premise inspired by Journey to the Center of the Earth. I defined the digging and exploration loop, the rig progression, the bestiary and the content structure, all ready for the production team to execute without guesswork." },
+      tags: ["Game Design", "GDD", "Marketplace"],
+      media: [{ type: "image", aspect: "1656 / 2339", src: "assets/dinosaurs-gdd-p1.png" }],
+      metrics: [{ value: "Cliente", label: { pt: "Panda Studios", en: "Panda Studios" } }, { value: "GDD", label: { pt: "Entrega final", en: "Final delivery" } }, { value: "Bedrock", label: { pt: "Plataforma", en: "Platform" } }],
+    },
+    {
+      id: "iglanguages", category: "Minecraft", title: "IGLanguages", year: "2025",
+      short: { pt: "Plugin de multilinguagem publicado no Spigot, com versão premium integrada ao Crowdin.", en: "Localization plugin published on Spigot, with a premium version integrated with Crowdin." },
+      long: { pt: "Plugin publicado no Spigot que resolve um problema chato de verdade: deixar um servidor de Minecraft multilíngue sem reescrever cada mensagem na mão. Configuração direta, troca de idioma por jogador e uma versão premium integrada ao Crowdin, a maior plataforma de tradução do mundo, para que equipes traduzam o servidor de forma profissional e contínua. Produto mantido, documentado e com suporte a donos de servidor.", en: "A plugin published on Spigot that solves a genuinely tedious problem: making a Minecraft server multilingual without rewriting every message by hand. Straightforward setup, per-player language switching, and a premium version integrated with Crowdin, the world's largest translation platform, so teams can localize a server professionally and continuously. A maintained, documented product with support for server owners." },
+      tags: ["Java", "Spigot", "Crowdin", "i18n"],
+      link: { url: "https://www.spigotmc.org/resources/iglanguages-the-multi-language-plugin-1-8-1-21.125318/", label: { pt: "Ver na SpigotMC", en: "View on SpigotMC" } },
+      media: [{ type: "scroll", src: "assets/iglanguages-demo.gif", caption: { pt: "Troca de idioma em tempo real, sem reiniciar o servidor", en: "Real-time language switching, no server restart" } }],
+      metrics: [{ value: "Spigot", label: { pt: "Publicado", en: "Published" } }, { value: "Crowdin", label: { pt: "Integração premium", en: "Premium integration" } }, { value: "Multi", label: { pt: "Idiomas", en: "Languages" } }],
+    },
+  ];
+
+  TESTIMONIALS = [
+    { name: "Savvy Soggy", stars: "★★★★★",
+      role: { pt: "YouTuber · High School Event", en: "YouTuber · High School Event" },
+      quote: { pt: "I just wanted to film a school episode. He handed me an entire school, classes and bell included, and held 350 people online without dropping mid-shoot.", en: "I just wanted to film a school episode. He handed me an entire school, classes and bell included, and held 350 people online without dropping mid-shoot." } },
+    { name: "Screw", stars: "★★★★★",
+      role: { pt: "Fundador · TabiQuest", en: "Founder · TabiQuest" },
+      quote: { pt: "I wanted the feeling of the Pokémon games I played as a kid, but inside Minecraft. It's the first time I saw someone actually get it: there's a campaign, there's dialogue, there's that moment of leaving home for the first time.", en: "I wanted the feeling of the Pokémon games I played as a kid, but inside Minecraft. It's the first time I saw someone actually get it: there's a campaign, there's dialogue, there's that moment of leaving home for the first time." } },
+    { name: "Night", stars: "★★★★★",
+      role: { pt: "Panda Studios · Dinosaurs: Lost Depths", en: "Panda Studios · Dinosaurs: Lost Depths" },
+      quote: { pt: "Recebemos o documento e o time de produção começou a trabalhar no mesmo dia, sem aquela rodada de \"e isso aqui, como funciona?\". Para um addon de Marketplace, isso é o que decide o prazo.", en: "We got the document and the production team started working the same day, with none of that \"wait, how does this part work?\" round. For a Marketplace addon, that's what decides the deadline." } },
+    { name: "Victor Polleto", stars: "★★★★★",
+      role: { pt: "CEO · Mia Studios", en: "CEO · Mia Studios" },
+      quote: { pt: "Nosso prazo era curto e a gente precisava do servidor de produção funcionando para ontem. Entregou antes do combinado e com mais do que a gente tinha pedido: o time entrou trabalhando no mesmo dia.", en: "Our deadline was tight and we needed the production server working yesterday. He delivered ahead of schedule and with more than we had asked for: the team started working the same day." } },
+    { name: "Sarah Klein", stars: "★★★★★",
+      role: { pt: "CTO · Nordic Apps", en: "CTO · Nordic Apps" },
+      quote: { pt: "We were worried about the timezone and the language barrier. In the end, the process that used to eat the team's morning now runs on its own with AI, and the answers come out better than ours.", en: "We were worried about the timezone and the language barrier. In the end, the process that used to eat the team's morning now runs on its own with AI, and the answers come out better than ours." } },
+  ];
+
+  VOCAB_EN = {
+    "Arquitetura": "Architecture",
+    "Eventos ao vivo": "Live events",
+    "Narrativa": "Narrative",
+    "Teste de carga": "Load testing",
+    "Monitoramento": "Monitoring",
+    "4 anos": "4 years",
+    "Ao vivo": "Live",
+    "Cliente": "Client",
+    "Multi": "Multi",
+  };
+
+  STR = {
+    pt: {
+      navProjects: "Projetos", navServices: "Serviços", navProcess: "Como trabalho", navAbout: "Sobre", navContact: "Contato", navCta: "Vamos conversar",
+      heroAvailable: "Disponível para novos projetos",
+      heroRole: "Software Engineer & Game Designer · Certificado pela CalArts",
+      heroH1a: "Transformando o impossível em ", heroH1b: "possível",
+      heroClients: "Trabalhei com", heroClientFree: "+ logo",
+      heroSub: "Sou Vitor Albert, também conhecido como IceGames. Desenho o jogo e construo a engenharia que o mantém de pé: servidores de Minecraft, eventos ao vivo e software com IA que rodam com centenas de jogadores ao mesmo tempo.",
+      heroCta1: "Ver projetos", heroCta2: "Vamos conversar",
+      statPlayers: "Jogadores impactados", statProjects: "Projetos entregues", statRating: "Avaliação média", statUptime: "Uptime dos servidores",
+      servEyebrow: "O que eu construo", servTitle: "Do documento de design ao servidor no ar.",
+      servSub: "Quatro frentes de trabalho. Cada uma com um projeto entregue que você pode abrir e conferir agora.",
+      servProof: "Ver a prova",
+      serv1Title: "Game design e narrativa", serv1Model: "Projeto fechado ou consultoria",
+      serv1Promise: "Seu jogo sai do papel com regras que fecham e conteúdo que prende.",
+      serv1Desc: "Documento de design, campanha, progressão, economia, diálogos e balanceamento. Entrego o GDD pronto para o time de produção executar sem adivinhação.",
+      serv2Title: "Servidores e sistemas Minecraft", serv2Model: "Projeto fechado ou evolução contínua",
+      serv2Promise: "Seu servidor aguenta o dia do lançamento.",
+      serv2Desc: "Plugins, minigames, dungeons instanciadas, NPCs animados, cinematics e economia multi-servidor, sobre uma arquitetura dimensionada para centenas de jogadores simultâneos.",
+      serv3Title: "Eventos ao vivo e infraestrutura", serv3Model: "Sob demanda, por evento",
+      serv3Promise: "O evento acontece na hora marcada, sem queda no ar.",
+      serv3Desc: "Dimensionamento para o pico, teste de carga antes da gravação, monitoramento durante o evento e plano de contingência. Já rodei com criador ao vivo e 350+ jogadores simultâneos.",
+      serv4Title: "Software, IA e web", serv4Model: "Projeto fechado ou mensal",
+      serv4Promise: "A parte chata roda sozinha, com resposta certa e rastreável.",
+      serv4Desc: "Aplicações Java/Spring e Python, bots com RAG sobre a sua base de conhecimento, integrações com modelos de linguagem, sites e painéis administrativos.",
+      projEyebrow: "Projetos em destaque", projTitle: "Trabalho recente.",
+      filterAll: "Todos", filterMc: "Minecraft", filterGd: "Game Design", filterAi: "IA / Software",
+      projDetails: "Ver detalhes", projDrop: "Arraste um screenshot", projVideo: "Espaço para vídeo", projEmpty: "Nenhum projeto nesta categoria ainda. Volte em breve.",
+      aboutEyebrow: "Sobre mim", aboutTitle: "Quem está por trás do código.",
+      aboutRole: "Software Engineer & Game Designer · Certificado pela CalArts · Sistemas de Informação, UFG",
+      aboutLead: "Sou apaixonado por transformar ideias em realidade.",
+      aboutBody: "Sou Software Engineer e Game Designer, certificado pela CalArts e cursando Sistemas de Informação na UFG. Engenharia de software, gestão de projetos, game design, escrita criativa e marketing raramente andam juntos, e é essa mistura que me deixa levar um projeto do escopo à entrega. Versátil, mas com uma especialidade clara: transformar o impossível em possível.",
+      aboutHint: "passe o mouse",
+      aboutFact1: "Certificado CalArts", aboutFact2: "Cursando UFG", aboutFact3: "Bilíngue (PT / EN)", aboutFact4: "Brasil",
+      testiEyebrow: "Depoimentos", testiTitle: "O que dizem os clientes.", testiDrag: "Arraste para navegar",
+      testiQ1: "Entregou o plugin antes do prazo e a comunidade adorou. Comunicação impecável do começo ao fim.", testiR1: "Dono · MineCraftBR Network",
+      testiQ2: "Clean code, clear English and on-time delivery. Would hire Vitor again in a heartbeat.", testiR2: "CTO · Nordic Apps",
+      procEyebrow: "Como eu trabalho", procTitle: "Sem surpresa no meio do caminho.",
+      procSub: "Todo projeto segue o mesmo processo, do primeiro contato ao suporte depois da entrega.",
+      procG1: "Resposta em até 24h", procG2: "Escopo e prazo por escrito", procG3: "Suporte após a entrega",
+      proc1t: "Conversa", proc1m: "Dia 1", proc1d: "Você me conta a ideia. Eu faço as perguntas que definem o problema antes de qualquer linha de código.",
+      proc2t: "Escopo e proposta", proc2m: "Até 3 dias", proc2d: "Você recebe escopo, prazo, valor e o que está fora do projeto, tudo por escrito, antes de fechar.",
+      proc3t: "Desenvolvimento", proc3m: "Por marcos", proc3d: "Entregas parciais em marcos combinados. Você acompanha o progresso e ajusta o rumo no caminho, não no fim.",
+      proc4t: "Entrega e suporte", proc4m: "Contínuo", proc4d: "Instalação, documentação e handoff para a sua equipe. Depois disso, suporte para ajustes e dúvidas.",
+      contactEyebrow: "Bora construir algo", contactTitle: "Tem um projeto em mente?",
+      contactSub: "Servidor de Minecraft, app, integração com IA? Me conta a ideia e eu retorno em até 24h.",
+      formName: "Nome", formEmail: "E-mail", formMessage: "Mensagem",
+      formNamePh: "Como posso te chamar?", formEmailPh: "voce@email.com", formMsgPh: "Me conta sobre o projeto: escopo, prazo, o que você imagina.",
+      formSubmit: "Enviar mensagem", formSending: "Enviando", successTitle: "Mensagem enviada!", successText: "Obrigado pelo contato. Retorno em até 24h, normalmente bem antes disso.", successAgain: "Enviar outra mensagem",
+      dcEyebrow: "Falha no envio",
+      dcTitle: "O formulário não enviou.",
+      dcText: "Parece que o sistema de e-mail falhou. Me chama no Discord, minha DM é aberta:",
+      dcHandle: "icegames",
+      dcAskTitle: "No recado, me conta:",
+      askProject: "O que é o projeto e qual problema ele resolve",
+      askTimeline: "Prazo que você tem em mente",
+      askBudget: "Orçamento disponível",
+      askScale: "Escala esperada: jogadores, usuários ou tamanho da equipe",
+      dcCopy: "Copiar mensagem", dcClose: "Fechar",
+      footerTagline: "Transformando o impossível em possível.\n",
+      modalCta: "Quero algo assim",
+      errName: "Como posso te chamar?", errEmail: "Confere o e-mail, parece que falta alguma coisa.", errMessage: "Conte um pouco mais (mínimo 10 caracteres).",
+    },
+    en: {
+      navProjects: "Projects", navServices: "Services", navProcess: "How I work", navAbout: "About", navContact: "Contact", navCta: "Let's talk",
+      heroAvailable: "Available for new projects",
+      heroRole: "Software Engineer & Game Designer · CalArts certified",
+      heroH1a: "Turning the impossible into the ", heroH1b: "possible",
+      heroClients: "Worked with", heroClientFree: "+ logo",
+      heroSub: "I'm Vitor Albert, a.k.a. IceGames. I design the game and build the engineering that keeps it standing: Minecraft servers, live events and AI-powered software that run with hundreds of current players.",
+      heroCta1: "View projects", heroCta2: "Let's talk",
+      statPlayers: "Players reached", statProjects: "Projects shipped", statRating: "Average rating", statUptime: "Server uptime",
+      servEyebrow: "What I build", servTitle: "From the design document to the server going live.",
+      servSub: "Four areas of work. Each one with a delivered project you can open and check right now.",
+      servProof: "See the proof",
+      serv1Title: "Game design and narrative", serv1Model: "Fixed project or consulting",
+      serv1Promise: "Your game leaves the page with rules that hold and content that keeps people playing.",
+      serv1Desc: "Design document, campaign, progression, economy, dialogue and balancing. I hand over a GDD the production team can execute without guesswork.",
+      serv2Title: "Minecraft servers and systems", serv2Model: "Fixed project or ongoing work",
+      serv2Promise: "Your server holds up on launch day.",
+      serv2Desc: "Plugins, minigames, instanced dungeons, animated NPCs, cinematics and multi-server economies, on an architecture sized for hundreds of concurrent players.",
+      serv3Title: "Live events and infrastructure", serv3Model: "On demand, per event",
+      serv3Promise: "The event happens on schedule, with nothing going down on air.",
+      serv3Desc: "Peak sizing, load testing before the shoot, monitoring during the event and a contingency plan. Already run live with a creator and 350+ concurrent players.",
+      serv4Title: "Software, AI and web", serv4Model: "Fixed project or monthly",
+      serv4Promise: "The tedious part runs itself, with answers that are correct and traceable.",
+      serv4Desc: "Java/Spring and Python applications, bots with RAG over your knowledge base, language-model integrations, websites and admin panels.",
+      projEyebrow: "Featured projects", projTitle: "Recent work.",
+      filterAll: "All", filterMc: "Minecraft", filterGd: "Game Design", filterAi: "AI / Software",
+      projDetails: "View details", projDrop: "Drop a screenshot", projVideo: "Video goes here", projEmpty: "No projects in this category yet. Check back soon.",
+      aboutEyebrow: "About me", aboutTitle: "The person behind the code.",
+      aboutRole: "Software Engineer & Game Designer · CalArts certified · Information Systems, UFG",
+      aboutLead: "I'm passionate about turning ideas into reality.",
+      aboutBody: "I'm a Software Engineer and Game Designer, CalArts certified and currently studying Information Systems at UFG. Software engineering, project management, game design, creative writing and marketing rarely come together, and that mix is what lets me carry a project from scope to delivery. Versatile, but with one clear specialty: turning the impossible into the possible.",
+      aboutHint: "hover to flip",
+      aboutFact1: "CalArts certified", aboutFact2: "Studying at UFG", aboutFact3: "Bilingual (PT / EN)", aboutFact4: "Based in Brazil",
+      testiEyebrow: "Testimonials", testiTitle: "What clients say.", testiDrag: "Drag to explore",
+      testiQ1: "Delivered the plugin ahead of schedule and the community loved it. Flawless communication from start to finish.", testiR1: "Owner · MineCraftBR Network",
+      testiQ2: "Clean code, clear English and on-time delivery. Would hire Vitor again in a heartbeat.", testiR2: "CTO · Nordic Apps",
+      procEyebrow: "How I work", procTitle: "No surprises along the way.",
+      procSub: "Every project follows the same process, from first contact to support after delivery.",
+      procG1: "Reply within 24h", procG2: "Scope and deadline in writing", procG3: "Support after delivery",
+      proc1t: "Conversation", proc1m: "Day 1", proc1d: "You tell me the idea. I ask the questions that define the problem before a single line of code.",
+      proc2t: "Scope and quote", proc2m: "Within 3 days", proc2d: "You get scope, timeline, price and what's out of scope, all in writing, before we start.",
+      proc3t: "Development", proc3m: "By milestones", proc3d: "Partial deliveries at agreed milestones. You follow progress and adjust course along the way, not at the end.",
+      proc4t: "Delivery and support", proc4m: "Ongoing", proc4d: "Setup, documentation and handoff to your team. After that, support for tweaks and questions.",
+      contactEyebrow: "Let's build something", contactTitle: "Got a project in mind?",
+      contactSub: "Minecraft server, app, AI integration? Tell me the idea and I'll get back within 24h.",
+      formName: "Name", formEmail: "Email", formMessage: "Message",
+      formNamePh: "What should I call you?", formEmailPh: "you@email.com", formMsgPh: "Tell me about the project: scope, timeline, what you have in mind.",
+      formSubmit: "Send message", formSending: "Sending", successTitle: "Message sent!", successText: "Thanks for reaching out. I'll reply within 24h, usually much sooner.", successAgain: "Send another message",
+      dcEyebrow: "Sending failed",
+      dcTitle: "The form didn't send.",
+      dcText: "Looks like the email system failed. Message me on Discord, my DMs are open:",
+      dcHandle: "icegames",
+      dcAskTitle: "In your message, tell me:",
+      askProject: "What the project is and the problem it solves",
+      askTimeline: "The timeline you have in mind",
+      askBudget: "Budget available",
+      askScale: "Expected scale: players, users or team size",
+      dcCopy: "Copy message", dcClose: "Close",
+      footerTagline: "Turning the impossible into the possible.",
+      modalCta: "I want something like this",
+      errName: "What should I call you?", errEmail: "Check the email, something seems off.", errMessage: "Tell me a bit more (at least 10 characters).",
+    },
+  };
+
+  componentDidMount() {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) { e.target.classList.add("is-in"); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.08, rootMargin: "0px 0px -6% 0px" });
+    if (this._root) {
+      this._root.querySelectorAll("[data-reveal]").forEach((el) => { el.classList.add("is-reveal"); io.observe(el); });
+    }
+    this._io = io;
+    const finish = () => { if (!this.state.ready) this.setState({ ready: true }); };
+    if (document.readyState === "complete") this._readyTimer = setTimeout(finish, 450);
+    else {
+      this._onLoad = () => { this._readyTimer = setTimeout(finish, 350); };
+      window.addEventListener("load", this._onLoad);
+    }
+    this._readyFallback = setTimeout(finish, 2600);
+    this.startSnow();
+    this.startTestiRail();
+    this._onKey = (ev) => { if (ev.key === "Escape") { this.closeModal(); this.closeDiscord(); } };
+    window.addEventListener("keydown", this._onKey);
+  }
+
+  startTestiRail() {
+    const el = this._testi;
+    if (!el) return;
+    const track = el.firstElementChild;
+    const half = () => {
+      if (!track || !track.children.length) return 0;
+      const mid = track.children[Math.floor(track.children.length / 2)];
+      return mid ? mid.offsetLeft - track.children[0].offsetLeft : 0;
+    };
+    const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let paused = false, drag = null, resume = 0;
+
+    const wrap = () => {
+      const h = half();
+      if (h > 0) {
+        if (el.scrollLeft >= h) el.scrollLeft -= h;
+        else if (el.scrollLeft <= 0) el.scrollLeft += h;
+      }
+    };
+    const loop = (now) => {
+      if (!reduce && !paused && !drag && now > resume) el.scrollLeft += 0.5;
+      wrap();
+      this._railRaf = requestAnimationFrame(loop);
+    };
+    this._railRaf = requestAnimationFrame(loop);
+
+    const onEnter = () => { paused = true; };
+    const onLeave = () => { paused = false; };
+    const onDown = (e) => {
+      drag = { x: e.clientX, left: el.scrollLeft };
+      el.setPointerCapture && el.setPointerCapture(e.pointerId);
+    };
+    const onMove = (e) => {
+      if (!drag) return;
+      e.preventDefault();
+      el.scrollLeft = drag.left - (e.clientX - drag.x);
+    };
+    const onUp = () => { if (drag) { drag = null; resume = performance.now() + 1400; } };
+
+    el.addEventListener("pointerenter", onEnter);
+    el.addEventListener("pointerleave", onLeave);
+    el.addEventListener("pointerdown", onDown);
+    el.addEventListener("pointermove", onMove);
+    el.addEventListener("pointerup", onUp);
+    el.addEventListener("pointercancel", onUp);
+    this._railCleanup = () => {
+      el.removeEventListener("pointerenter", onEnter);
+      el.removeEventListener("pointerleave", onLeave);
+      el.removeEventListener("pointerdown", onDown);
+      el.removeEventListener("pointermove", onMove);
+      el.removeEventListener("pointerup", onUp);
+      el.removeEventListener("pointercancel", onUp);
+    };
+  }
+
+  startSnow() {
+    const cv = this._snow;
+    if (!cv || this.props.snow === false) return;
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const ctx = cv.getContext("2d");
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    let w = 0, h = 0, flakes = [];
+    const accent = this.props.accentColor ?? "#6ED4F2";
+    const resize = () => {
+      w = cv.clientWidth; h = cv.clientHeight;
+      cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const count = Math.round(Math.min(220, (w * h) / 9000));
+      flakes = new Array(count).fill(0).map(() => ({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        s: 1 + Math.floor(Math.random() * 3),
+        vy: 14 + Math.random() * 48,
+        drift: 6 + Math.random() * 26,
+        phase: Math.random() * Math.PI * 2,
+        a: 0.18 + Math.random() * 0.5,
+      }));
+    };
+    resize();
+    this._onResize = () => resize();
+    window.addEventListener("resize", this._onResize);
+
+    const t0 = performance.now();
+    let last = t0;
+    const draw = (now) => {
+      if (cv.clientWidth !== w || cv.clientHeight !== h) resize();
+      if (!w || !h) { this._raf = requestAnimationFrame(draw); return; }
+      const dt = Math.min(0.05, (now - last) / 1000);
+      last = now;
+      const life = (now - t0) / 1000;
+      // blizzard on arrival: strong gust that settles into a calm drift
+      const gust = 1 + 3.4 * Math.exp(-life / 1.9);
+      ctx.clearRect(0, 0, w, h);
+      for (const f of flakes) {
+        f.phase += dt * 1.1;
+        f.y += f.vy * gust * dt;
+        f.x += (Math.sin(f.phase) * f.drift + 26 * (gust - 1)) * dt;
+        if (f.y - f.s > h) { f.y = -f.s * 2; f.x = Math.random() * w; }
+        if (f.x > w + 6) f.x = -6;
+        if (f.x < -6) f.x = w + 6;
+        ctx.globalAlpha = f.a * Math.min(1, 0.45 + gust * 0.25);
+        ctx.fillStyle = f.s > 2 ? accent : "#F4F1EA";
+        ctx.fillRect(Math.round(f.x), Math.round(f.y), f.s, f.s);
+      }
+      ctx.globalAlpha = 1;
+      this._raf = requestAnimationFrame(draw);
+    };
+    this._raf = requestAnimationFrame(draw);
+  }
+
+  componentWillUnmount() {
+    if (this._raf) cancelAnimationFrame(this._raf);
+    if (this._railRaf) cancelAnimationFrame(this._railRaf);
+    if (this._railCleanup) this._railCleanup();
+    if (this._onResize) window.removeEventListener("resize", this._onResize);
+    if (this._io) this._io.disconnect();
+    if (this._onKey) window.removeEventListener("keydown", this._onKey);
+    if (this._sendTimer) clearTimeout(this._sendTimer);
+    if (this._readyTimer) clearTimeout(this._readyTimer);
+    if (this._readyFallback) clearTimeout(this._readyFallback);
+    if (this._onLoad) window.removeEventListener("load", this._onLoad);
+    document.body.style.overflow = "";
+  }
+
+  animateCounts() {
+    const targets = { players: 12, projects: 40, rating: 4.9, uptime: 99.9 };
+    const dur = 1500;
+    const t0 = performance.now();
+    const tick = (now) => {
+      const p = Math.min(1, (now - t0) / dur);
+      const e = 1 - Math.pow(1 - p, 3);
+      this.setState({ counts: {
+        players: targets.players * e, projects: targets.projects * e,
+        rating: targets.rating * e, uptime: targets.uptime * e,
+      } });
+      if (p < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+
+  setFilter(f) { this.setState({ filter: f }); }
+
+  setLang(l) {
+    try { localStorage.setItem("ig_lang", l); } catch (e) {}
+    this.setState({ lang: l });
+  }
+
+  openModal(id) { this.setState({ modalId: id }); document.body.style.overflow = "hidden"; }
+  closeModal() { this.setState({ modalId: null }); document.body.style.overflow = ""; }
+  closeDiscord() { this.setState({ discordOpen: false }); document.body.style.overflow = ""; }
+
+  setField(k, v) {
+    this.setState((s) => ({
+      form: Object.assign({}, s.form, { [k]: v }),
+      errors: Object.assign({}, s.errors, { [k]: undefined }),
+    }));
+  }
+
+  submit(ev) {
+    if (ev && ev.preventDefault) ev.preventDefault();
+    const { name, email, message } = this.state.form;
+    const t = this.STR[this.state.lang];
+    const errors = {};
+    if (!name.trim()) errors.name = t.errName;
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email.trim())) errors.email = t.errEmail;
+    if (message.trim().length < 10) errors.message = t.errMessage;
+    if (Object.keys(errors).length) { this.setState({ errors }); return; }
+    if (this.state.sending) return;
+    this.setState({ sending: true, errors: {} });
+    this._sendTimer = setTimeout(() => {
+      this.setState({ sending: false, discordOpen: true });
+      document.body.style.overflow = "hidden";
+    }, 1600);
+  }
+
+  resetForm() { this.setState({ submitted: false, form: { name: "", email: "", message: "" }, errors: {} }); }
+
+  renderVals() {
+    const lang = this.state.lang;
+    const t = this.STR[lang];
+    const c = this.state.counts;
+    const fmt1 = (n) => n.toFixed(1);
+    const tr = (s) => (lang === "en" && this.VOCAB_EN[s]) ? this.VOCAB_EN[s] : s;
+    const catLabel = (cat) => cat === "IA / Software" ? t.filterAi : cat === "Game Design" ? t.filterGd : cat === "Minecraft" ? t.filterMc : cat;
+    const tx = (p) => Object.assign({}, p, {
+      year: typeof p.year === "string" ? p.year : p.year[lang],
+      categoryLabel: p.label || catLabel(p.category),
+      hasLink: !!p.link,
+      linkUrl: p.link ? p.link.url : "",
+      linkLabel: p.link ? p.link.label[lang] : "",
+      short: p.short[lang],
+      long: p.long[lang],
+      tags: (p.tags || []).map((tag) => tr(tag)),
+      metrics: p.metrics.map((m) => ({ value: tr(m.value), label: m.label[lang] })),
+      media: (p.media || []).map((m, i) => {
+        const isVideo = m.type === "video";
+        const hasUrl = isVideo && !!m.url;
+        const isFile = m.type === "file";
+        const isScroll = m.type === "scroll";
+        const isYt = m.type === "youtube";
+        let node = null;
+        if (isYt) {
+          node = React.createElement("a", {
+            href: "https://www.youtube.com/watch?v=" + m.yt,
+            target: "_blank", rel: "noopener",
+            style: { position: "relative", display: "block", width: "100%", aspectRatio: "16 / 9", background: "#0B0B0C", overflow: "hidden" },
+          }, [
+            React.createElement("img", { key: "t", src: "https://i.ytimg.com/vi/" + m.yt + "/maxresdefault.jpg", alt: p.title,
+              style: { display: "block", width: "100%", height: "100%", objectFit: "cover" } }),
+            React.createElement("span", { key: "p",
+              style: { position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" } },
+              React.createElement("span", { style: { display: "flex", alignItems: "center", gap: "10px", padding: "13px 22px", background: "#0B0B0C", color: "#F4F1EA", fontFamily: "'JetBrains Mono', monospace", fontSize: "12px", letterSpacing: "0.14em", textTransform: "uppercase", fontWeight: 700 } }, "▶ YouTube")),
+          ]);
+        }
+        if (isFile && m.src) {
+          node = React.createElement("video", {
+            src: m.src, controls: true, playsInline: true, preload: "metadata",
+            style: { display: "block", width: "100%", aspectRatio: "16 / 9", background: "#0B0B0C", border: "none" },
+          });
+        } else if (isScroll && m.src) {
+          node = React.createElement("img", {
+            src: m.src, alt: p.title,
+            style: { display: "block", width: "100%", height: "auto" },
+          });
+        }
+        return {
+          node,
+          key: p.id + "-" + i,
+          id: "shot-" + p.id + "-" + i,
+          label: p.title + " " + (i + 1),
+          url: m.url || "",
+          src: m.src || "",
+          aspect: m.aspect || "16 / 9",
+          span: isVideo || isScroll || i === 0 || (p.media || []).length === 1 ? "1 / -1" : "auto",
+          caption: m.caption ? m.caption[lang] : "",
+          isEmbed: hasUrl,
+          isVideoEmpty: isVideo && !hasUrl,
+          isFile: isFile || isYt,
+          isScroll: isScroll,
+          isSlot: !isVideo && !isFile && !isScroll && !isYt,
+        };
+      }),
+    });
+
+    const filters = [
+      { value: "Todos", label: t.filterAll },
+      { value: "Minecraft", label: t.filterMc },
+      { value: "Game Design", label: t.filterGd },
+      { value: "IA / Software", label: t.filterAi },
+    ].map((f) => ({ label: f.label, active: this.state.filter === f.value, onClick: () => this.setFilter(f.value) }));
+
+    const projects = this.PROJECTS
+      .filter((p) => this.state.filter === "Todos" || p.category === this.state.filter)
+      .map((p, i) => Object.assign({}, tx(p), {
+        num: String(i + 1).padStart(2, "0"),
+        onOpen: () => this.openModal(p.id),
+      }));
+
+    const rawModal = this.PROJECTS.find((p) => p.id === this.state.modalId) || null;
+    const modalProject = rawModal ? tx(rawModal) : null;
+
+    return {
+      rootRef: (el) => {
+        this._root = el;
+        if (el) el.style.setProperty("--ac", this.props.accentColor ?? "#6ED4F2");
+      },
+      snowRef: (el) => { this._snow = el; },
+      testiRef: (el) => { this._testi = el; },
+      t, lang,
+      ready: this.state.ready,
+      isPt: lang === "pt",
+      isEn: lang === "en",
+      setPt: () => this.setLang("pt"),
+      setEn: () => this.setLang("en"),
+      testimonials: this.TESTIMONIALS.concat(this.TESTIMONIALS).map((q, i) => ({
+        key: q.name + i, name: q.name, stars: q.stars, role: q.role[lang], quote: q.quote[lang],
+      })),
+      showTestimonials: this.props.showTestimonials ?? true,
+      playersStr: Math.round(c.players) + "k",
+      projectsStr: String(Math.round(c.projects)),
+      ratingStr: fmt1(c.rating),
+      uptimeStr: fmt1(c.uptime),
+      filters, projects,
+      services: [
+        { n: 1, proof: "dinosaurs", tags: ["Game Design", "GDD", "Narrativa"] },
+        { n: 2, proof: "afterlands", tags: ["Java", "Spigot / Paper", "Redis"] },
+        { n: 3, proof: "highschool", tags: ["DevOps", "Teste de carga", "Monitoramento"] },
+        { n: 4, proof: "cortex", tags: ["Java / Spring", "Python", "RAG", "Vue"] },
+      ].map((s) => ({
+        key: "sv" + s.n,
+        num: "0" + s.n,
+        title: t["serv" + s.n + "Title"],
+        promise: t["serv" + s.n + "Promise"],
+        desc: t["serv" + s.n + "Desc"],
+        model: t["serv" + s.n + "Model"],
+        proofLabel: t.servProof,
+        tags: s.tags.map((x, i) => ({ key: s.n + "-" + i, label: tr(x) })),
+        onOpen: () => this.openModal(s.proof),
+      })),
+      clients: [
+        { id: "client-soggy", name: "Soggy", src: "assets/client-soggy.jpg", w: "78px", h: "78px", href: "https://www.youtube.com/@savvysoggy" },
+        { id: "client-afterlands", name: "AfterLands", src: "assets/client-afterlands.png", w: "270px", h: "72px", href: "https://www.afterlands.com" },
+        { id: "client-tabiquest", name: "TabiQuest", src: "assets/client-tabiquest.png", w: "110px", h: "110px", href: "" },
+        { id: "client-mia", name: "Mia Studios", src: "assets/client-mia.png", w: "212px", h: "72px", href: "https://www.mia-studios.net" },
+        { id: "client-panda", name: "Panda Studios", src: "assets/client-panda.png", w: "92px", h: "84px", href: "https://www.panda-studios.net/" },
+        { id: "client-eco", name: "Eco Studios", src: "assets/client-eco.png", w: "206px", h: "72px", href: "https://www.ecostudios.com.br/" },
+      ].concat([
+        { id: "client-soggy", name: "Soggy", src: "assets/client-soggy.jpg", w: "78px", h: "78px", href: "https://www.youtube.com/@savvysoggy" },
+        { id: "client-afterlands", name: "AfterLands", src: "assets/client-afterlands.png", w: "270px", h: "72px", href: "https://www.afterlands.com" },
+        { id: "client-tabiquest", name: "TabiQuest", src: "assets/client-tabiquest.png", w: "110px", h: "110px", href: "" },
+        { id: "client-mia", name: "Mia Studios", src: "assets/client-mia.png", w: "212px", h: "72px", href: "https://www.mia-studios.net" },
+        { id: "client-panda", name: "Panda Studios", src: "assets/client-panda.png", w: "92px", h: "84px", href: "https://www.panda-studios.net/" },
+        { id: "client-eco", name: "Eco Studios", src: "assets/client-eco.png", w: "206px", h: "72px", href: "https://www.ecostudios.com.br/" },
+      ]).map((c, i) => ({ key: c.id + "-" + i, id: c.id, name: c.name, src: c.src, w: c.w, h: c.h, href: c.href, hasLink: !!c.href, noLink: !c.href })),
+      steps: [1, 2, 3, 4].map((n) => ({
+        key: "s" + n, num: "0" + n,
+        title: t["proc" + n + "t"], meta: t["proc" + n + "m"], desc: t["proc" + n + "d"],
+      })),
+      noProjects: projects.length === 0,
+      modalOpen: !!modalProject,
+      modalProject,
+      hero: (modalProject && modalProject.media[0]) || { isSlot: true, id: "shot-empty", aspect: "16 / 9", src: "", caption: "", isEmbed: false, isVideoEmpty: false, isFile: false, isScroll: false },
+      gallery: modalProject ? modalProject.media.slice(1) : [],
+      hasGallery: !!modalProject && modalProject.media.length > 1,
+      submitted: this.state.submitted,
+      showForm: !this.state.submitted,
+      form: this.state.form,
+      errors: this.state.errors,
+      onName: (e) => this.setField("name", e.target.value),
+      onEmail: (e) => this.setField("email", e.target.value),
+      onMessage: (e) => this.setField("message", e.target.value),
+      onSubmit: (e) => this.submit(e),
+      resetForm: () => this.resetForm(),
+      closeModal: () => this.closeModal(),
+      discordOpen: this.state.discordOpen,
+      sending: this.state.sending,
+      notSending: !this.state.sending,
+      submitLabel: this.state.sending ? t.formSending : t.formSubmit,
+      closeDiscord: () => this.closeDiscord(),
+      askItems: [t.askProject, t.askTimeline, t.askBudget, t.askScale].map((s, i) => ({ key: "a" + i, text: s })),
+      stop: (e) => e.stopPropagation(),
+      year: String(new Date().getFullYear()),
+    };
+  }
+}
+</script>
+</body>
+</html>

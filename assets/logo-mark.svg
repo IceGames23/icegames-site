@@ -1,0 +1,26 @@
+<svg width="96" height="96" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="IceGames mark">
+  <defs>
+    <linearGradient id="igGrad" x1="20" y1="14" x2="76" y2="82" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#38bdf8"></stop>
+      <stop offset="1" stop-color="#06b6d4"></stop>
+    </linearGradient>
+  </defs>
+  
+  <path d="M48 6 84 27V69L48 90 12 69V27L48 6Z" fill="#0f172a"></path>
+  <path d="M48 6 84 27V69L48 90 12 69V27L48 6Z" stroke="url(#igGrad)" stroke-width="3" stroke-linejoin="round" fill="none"></path>
+  
+  <g stroke="url(#igGrad)" stroke-width="4" stroke-linecap="round">
+    <line x1="48" y1="26" x2="48" y2="70"></line>
+    <line x1="29" y1="37" x2="67" y2="59"></line>
+    <line x1="29" y1="59" x2="67" y2="37"></line>
+  </g>
+  <g stroke="url(#igGrad)" stroke-width="3" stroke-linecap="round">
+    <path d="M48 30 L43 36 M48 30 L53 36"></path>
+    <path d="M48 66 L43 60 M48 66 L53 60"></path>
+    <path d="M32 39 L33 46 M32 39 L39 38"></path>
+    <path d="M64 57 L63 50 M64 57 L57 58"></path>
+    <path d="M32 57 L39 58 M32 57 L33 50"></path>
+    <path d="M64 39 L57 38 M64 39 L63 46"></path>
+  </g>
+  <circle cx="48" cy="48" r="5" fill="url(#igGrad)"></circle>
+</svg>
