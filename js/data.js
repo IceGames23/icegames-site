@@ -19,7 +19,7 @@ window.IG_DATA = {
       link: { url: "https://www.afterlands.com", label: { pt: "Ver o site", en: "Visit website" } },
       media: [
         { type: "file", src: "assets/afterlands-cinematic.mp4" },
-        { type: "scroll", src: "assets/afterlands-site.png", caption: { pt: "Site oficial do AfterLands · role para ver a página inteira", en: "AfterLands official website · scroll to see the full page" } },
+        { type: "scroll", src: "assets/afterlands-site.jpg", caption: { pt: "Site oficial do AfterLands · role para ver a página inteira", en: "AfterLands official website · scroll to see the full page" } },
         { type: "file", src: "assets/afterlands-circuit.mp4" },
         { type: "file", src: "assets/afterlands-bus.mp4" },
       ],
