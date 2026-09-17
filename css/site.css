@@ -120,6 +120,7 @@ img, video { max-width: 100%; }
 .menu-btn[data-open="true"] .menu-lines span:nth-child(1) { transform: translateY(5.25px) rotate(45deg); }
 .menu-btn[data-open="true"] .menu-lines span:nth-child(2) { opacity: 0; }
 .menu-btn[data-open="true"] .menu-lines span:nth-child(3) { transform: translateY(-5.25px) rotate(-45deg); }
+.menu-btn[data-open="true"] ~ .lang { display: none; }
 
 .mnav {
   position: fixed; top: 64px; left: 0; right: 0; bottom: 0; z-index: 45;
