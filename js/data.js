@@ -82,6 +82,9 @@ window.IG_DATA = {
     { name: "Victor Polleto", stars: "★★★★★",
       role: { pt: "CEO · Mia Studios", en: "CEO · Mia Studios" },
       quote: { pt: "Nosso prazo era curto e a gente precisava do servidor de produção funcionando para ontem. Entregou antes do combinado e com mais do que a gente tinha pedido: o time entrou trabalhando no mesmo dia.", en: "Our deadline was tight and we needed the production server working yesterday. He delivered ahead of schedule and with more than we had asked for: the team started working the same day." } },
+    { name: "Leo Coffe", stars: "★★★★★",
+      role: { pt: "Eco Studios", en: "Eco Studios" },
+      quote: { pt: "O trabalho ficou muito bom e cobriu exatamente o que a gente precisava. Sem retrabalho, sem enrolação.", en: "The work turned out great and covered exactly what we needed. No rework, no runaround." } },
   ],
 
   /* Logos in the hero marquee. w/h are the box the logo is fitted into. href "" = not a link */
