@@ -473,7 +473,7 @@
   document.addEventListener('click', function (e) {
     var el;
     if (e.target.closest('.menu-btn')) { setMenu(!state.menuOpen); return; }
-    if (e.target.closest('#mobile-nav a')) { setMenu(false); return; /* the anchor still navigates; returning here just avoids falling through to the [data-open] modal-trigger check below, which would otherwise match the panel's own data-open attribute */ }
+    if (e.target.closest('#mobile-nav a, .header a')) { setMenu(false); return; /* the anchor still navigates; returning here just avoids falling through to the [data-open] modal-trigger check below, which would otherwise match the panel's own data-open attribute */ }
     if ((el = e.target.closest('.lang-btn'))) { setLang(el.getAttribute('data-lang')); return; }
     if ((el = e.target.closest('[data-filter]'))) { state.filter = el.getAttribute('data-filter'); renderFilters(); renderProjects(); return; }
     if ((el = e.target.closest('button[data-open]'))) { openModal(el.getAttribute('data-open')); return; }
