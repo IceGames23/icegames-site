@@ -440,7 +440,7 @@
      Mouse: hover pauses, press-and-drag scrolls. Touch: native scrolling. */
   function makeRail(el, track) {
     if (!el || !track) return;
-    var paused = false, drag = null, resume = 0;
+    var drag = null, resume = 0;
 
     /* distance between the first item and its duplicate */
     var half = function () {
@@ -466,6 +466,9 @@
     var loop = function (now) {
       var dt = last ? Math.min(0.05, (now - last) / 1000) : 0;
       last = now;
+      /* hover pause is a mouse affordance: :hover is re-evaluated by the browser on scroll,
+         unlike pointerenter/leave, so it cannot stay stuck when the page moves under the cursor */
+      var paused = !touch && el.matches(":hover");
       if (!reduceMotion && !paused && !drag && now > resume) {
         /* a whole-pixel gap means the user (or wrap) moved the rail: follow it */
         if (Math.abs(el.scrollLeft - pos) >= 1) pos = el.scrollLeft;
@@ -481,9 +484,6 @@
     };
     requestAnimationFrame(loop);
 
-    /* hover pause is a mouse affordance; on touch, "hover" would stick after a tap */
-    el.addEventListener('pointerenter', function (e) { if (e.pointerType !== 'touch') paused = true; });
-    el.addEventListener('pointerleave', function () { paused = false; });
     /* after a native touch scroll, give the reader a moment before auto-scroll resumes */
     el.addEventListener('touchend', function () { resume = performance.now() + 1400; }, { passive: true });
     el.addEventListener('pointerdown', function (e) {
