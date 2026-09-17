@@ -454,8 +454,18 @@
       if (el.scrollLeft >= h) el.scrollLeft -= h;
       else if (el.scrollLeft <= 0) el.scrollLeft += h;
     };
+    /* fractional position mirror: some mobile browsers (iOS Safari) round
+       scrollLeft to whole pixels, so "+= 0.5" would never leave 0 */
+    var pos = 0;
     var loop = function (now) {
-      if (!reduceMotion && !paused && !drag && now > resume) el.scrollLeft += 0.5;
+      if (!reduceMotion && !paused && !drag && now > resume) {
+        /* a whole-pixel gap means the user (or wrap) moved the rail: follow it */
+        if (Math.abs(el.scrollLeft - pos) >= 1) pos = el.scrollLeft;
+        pos += 0.5;
+        el.scrollLeft = pos;
+      } else {
+        pos = el.scrollLeft;
+      }
       /* under reduced motion the rail must stay put while idle; only wrap
          while a drag is in progress (or resolving) so dragging still works */
       if (!reduceMotion || drag) wrap();
@@ -463,8 +473,11 @@
     };
     requestAnimationFrame(loop);
 
-    el.addEventListener('pointerenter', function () { paused = true; });
+    /* hover pause is a mouse affordance; on touch, "hover" would stick after a tap */
+    el.addEventListener('pointerenter', function (e) { if (e.pointerType !== 'touch') paused = true; });
     el.addEventListener('pointerleave', function () { paused = false; });
+    /* after a native touch scroll, give the reader a moment before auto-scroll resumes */
+    el.addEventListener('touchend', function () { resume = performance.now() + 1400; }, { passive: true });
     el.addEventListener('pointerdown', function (e) {
       if (e.pointerType === 'touch') return;          /* native scroll on touch */
       drag = { x: e.clientX, left: el.scrollLeft };

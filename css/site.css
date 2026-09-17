@@ -164,7 +164,7 @@ img, video { max-width: 100%; }
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 90%, transparent);
 }
 .clients-rail { display: flex; align-items: center; width: max-content; animation: ig-marquee 36s linear infinite; }
-.clients-mask:hover .clients-rail { animation-play-state: paused; }
+@media (hover: hover) { .clients-mask:hover .clients-rail { animation-play-state: paused; } }
 .client {
   display: block; flex: none; margin-right: clamp(28px, 4vw, 56px);
   opacity: .78; filter: grayscale(1) brightness(1.4) contrast(.9);
