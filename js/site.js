@@ -440,7 +440,7 @@
      Mouse: hover pauses, press-and-drag scrolls. Touch: native scrolling. */
   function makeRail(el, track) {
     if (!el || !track) return;
-    var drag = null, resume = 0;
+    var drag = null, resume = 0, paused = false;
 
     /* distance between the first item and its duplicate */
     var half = function () {
@@ -466,9 +466,6 @@
     var loop = function (now) {
       var dt = last ? Math.min(0.05, (now - last) / 1000) : 0;
       last = now;
-      /* hover pause is a mouse affordance: :hover is re-evaluated by the browser on scroll,
-         unlike pointerenter/leave, so it cannot stay stuck when the page moves under the cursor */
-      var paused = !touch && el.matches(":hover");
       if (!reduceMotion && !paused && !drag && now > resume) {
         /* a whole-pixel gap means the user (or wrap) moved the rail: follow it */
         if (Math.abs(el.scrollLeft - pos) >= 1) pos = el.scrollLeft;
@@ -484,6 +481,15 @@
     };
     requestAnimationFrame(loop);
 
+    /* hover pause is a mouse affordance. It is driven only by real mouse events (never by the
+       browser's hover state, which can be stale right after load) and cleared when the page
+       scrolls, so it cannot stay stuck with the cursor parked somewhere. Touch devices never pause. */
+    if (!touch) {
+      el.addEventListener('mouseenter', function () { paused = true; });
+      el.addEventListener('mousemove', function () { paused = true; });
+      el.addEventListener('mouseleave', function () { paused = false; });
+      window.addEventListener('scroll', function () { paused = false; }, { passive: true });
+    }
     /* after a native touch scroll, give the reader a moment before auto-scroll resumes */
     el.addEventListener('touchend', function () { resume = performance.now() + 1400; }, { passive: true });
     el.addEventListener('pointerdown', function (e) {
