@@ -505,14 +505,29 @@
     if (e.target.closest('[data-close-discord]')) { closeDiscord(); return; }
     if (e.target.id === 'project-modal') { closeModal(); return; }
     if (e.target.id === 'discord-modal') { closeDiscord(); return; }
+    if ((el = e.target.closest('.flip-card'))) { toggleFlip(el); return; }
   });
   window.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') { closeModal(); closeDiscord(); setMenu(false); }
+    if ((e.key === 'Enter' || e.key === ' ') && e.target.classList && e.target.classList.contains('flip-card')) {
+      e.preventDefault();
+      toggleFlip(e.target);
+    }
   });
   window.addEventListener('resize', function () { if (window.innerWidth > 1080) setMenu(false); });
 
+  /* ---------- about flip card (tap / keyboard; hover handles itself in CSS) ---------- */
+  function toggleFlip(card) {
+    card.setAttribute('data-flipped', String(card.getAttribute('data-flipped') !== 'true'));
+  }
+
   /* ---------- init ---------- */
   $('#year').textContent = String(new Date().getFullYear());
+  /* no hover (touch devices): the about-card hint says "tap" instead of "hover" */
+  if (window.matchMedia && window.matchMedia('(hover: none)').matches) {
+    var hint = $('[data-i18n="aboutHint"]');
+    if (hint) hint.setAttribute('data-i18n', 'aboutHintTouch');
+  }
   renderAll();
   bindForm();
   initReveal();
