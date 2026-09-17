@@ -40,6 +40,7 @@
     filter: 'Todos',
     modalId: null,
     discordOpen: false,
+    menuOpen: false,
     sending: false,
     errors: {},        // field name → STR key
   };
@@ -177,7 +178,7 @@
 
   /* ---------- modals ---------- */
   function syncScrollLock() {
-    document.body.style.overflow = (state.modalId || state.discordOpen) ? 'hidden' : '';
+    document.body.style.overflow = (state.modalId || state.discordOpen || state.menuOpen) ? 'hidden' : '';
   }
 
   function mediaHtml(m, p, isHero) {
@@ -249,6 +250,26 @@
   function closeDiscord() {
     if (!state.discordOpen) return;
     state.discordOpen = false; $('#discord-modal').hidden = true; syncScrollLock();
+  }
+
+  /* ---------- mobile menu ---------- */
+  function setMenu(open) {
+    var panel = $('#mobile-nav');
+    var btn = $('.menu-btn');
+    if (!panel || !btn || state.menuOpen === open) return;
+    state.menuOpen = open;
+    btn.setAttribute('aria-expanded', String(open));
+    btn.setAttribute('data-open', String(open));
+    if (open) {
+      panel.hidden = false;
+      /* force a frame so the opacity/transform transition runs */
+      void panel.offsetWidth;
+      panel.setAttribute('data-open', 'true');
+    } else {
+      panel.setAttribute('data-open', 'false');
+      panel.hidden = true;
+    }
+    syncScrollLock();
   }
 
   /* ---------- form ---------- */
@@ -436,6 +457,8 @@
   /* ---------- events ---------- */
   document.addEventListener('click', function (e) {
     var el;
+    if (e.target.closest('.menu-btn')) { setMenu(!state.menuOpen); return; }
+    if (e.target.closest('#mobile-nav a')) { setMenu(false); return; /* the anchor still navigates; returning here just avoids falling through to the [data-open] modal-trigger check below, which would otherwise match the panel's own data-open attribute */ }
     if ((el = e.target.closest('.lang-btn'))) { setLang(el.getAttribute('data-lang')); return; }
     if ((el = e.target.closest('[data-filter]'))) { state.filter = el.getAttribute('data-filter'); renderFilters(); renderProjects(); return; }
     if ((el = e.target.closest('[data-open]'))) { openModal(el.getAttribute('data-open')); return; }
@@ -445,8 +468,9 @@
     if (e.target.id === 'discord-modal') { closeDiscord(); return; }
   });
   window.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') { closeModal(); closeDiscord(); }
+    if (e.key === 'Escape') { closeModal(); closeDiscord(); setMenu(false); }
   });
+  window.addEventListener('resize', function () { if (window.innerWidth > 1080) setMenu(false); });
 
   /* ---------- init ---------- */
   $('#year').textContent = String(new Date().getFullYear());

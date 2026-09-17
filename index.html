@@ -59,6 +59,9 @@
         <a href="#contato" data-i18n="navContact">Contato</a>
       </nav>
       <div class="header-right">
+        <button class="menu-btn" type="button" aria-label="Menu" aria-controls="mobile-nav" aria-expanded="false" data-open="false">
+          <span class="menu-lines" aria-hidden="true"><span></span><span></span><span></span></span>
+        </button>
         <div class="lang" role="group" aria-label="Idioma / Language">
           <button class="lang-btn" type="button" data-lang="en" data-active="false">EN</button>
           <span class="lang-sep">/</span>
@@ -68,6 +71,24 @@
       </div>
     </div>
   </header>
+
+  <div class="mnav" id="mobile-nav" data-open="false" hidden>
+    <nav class="wrap mnav-inner" aria-label="Menu">
+      <a class="mnav-link" href="#trabalho"><span class="mnav-num">01</span><span data-i18n="navProjects">Projetos</span></a>
+      <a class="mnav-link" href="#servicos"><span class="mnav-num">02</span><span data-i18n="navServices">Serviços</span></a>
+      <a class="mnav-link" href="#sobre"><span class="mnav-num">03</span><span data-i18n="navAbout">Sobre</span></a>
+      <a class="mnav-link" href="#processo"><span class="mnav-num">04</span><span data-i18n="navProcess">Como trabalho</span></a>
+      <a class="mnav-link" href="#contato"><span class="mnav-num">05</span><span data-i18n="navContact">Contato</span></a>
+      <div class="mnav-foot">
+        <div class="lang" role="group" aria-label="Idioma / Language">
+          <button class="lang-btn" type="button" data-lang="en" data-active="false">EN</button>
+          <span class="lang-sep">/</span>
+          <button class="lang-btn" type="button" data-lang="pt" data-active="true">PT</button>
+        </div>
+        <a class="btn btn-primary mnav-cta" href="#contato" data-i18n="navCta">Vamos conversar</a>
+      </div>
+    </nav>
+  </div>
 
   <main>
 
