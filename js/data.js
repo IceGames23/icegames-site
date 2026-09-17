@@ -1,5 +1,5 @@
 /* ============================================================
-   IceGames portfolio — content
+   IceGames portfolio: content
    Edit this file to add/change projects, testimonials, clients
    or any PT/EN string. No logic lives here.
    ============================================================ */

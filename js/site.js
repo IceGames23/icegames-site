@@ -1,5 +1,5 @@
 /* ============================================================
-   IceGames portfolio — behavior
+   IceGames portfolio: behavior
    Content comes from js/data.js (window.IG_DATA).
    Sections: helpers · i18n · render · modals · form · splash ·
              reveal · snow · testimonial rail · events · init
@@ -288,7 +288,7 @@
       if (Object.keys(state.errors).length) return;
       state.sending = true;
       renderForm();
-      /* Design behavior (user decision): no backend — after a short "sending" state,
+      /* Design behavior (user decision): no backend - after a short "sending" state,
          fall back to the Discord modal. */
       sendTimer = setTimeout(function () {
         state.sending = false;
