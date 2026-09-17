@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vitor Albert · IceGames — Software Engineer & Game Designer</title>
+  <meta name="description" content="Software Engineer e Game Designer. Servidores de Minecraft, eventos ao vivo e software com IA que rodam com centenas de jogadores ao mesmo tempo.">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/site.css">
+</head>
+<body>
+
+  <div class="splash" id="splash" aria-hidden="true">
+    <span class="splash-logo">IceGames</span>
+    <span class="splash-bar"><span></span></span>
+  </div>
+
+  <canvas class="snow" id="snow" aria-hidden="true"></canvas>
+
+  <header class="header">
+    <div class="wrap header-inner">
+      <a class="brand" href="#topo">ICEGAMES.ME</a>
+      <nav class="nav" aria-label="Seções">
+        <a href="#trabalho" data-i18n="navProjects">Projetos</a>
+        <a href="#servicos" data-i18n="navServices">Serviços</a>
+        <a href="#processo" data-i18n="navProcess">Como trabalho</a>
+        <a href="#sobre" data-i18n="navAbout">Sobre</a>
+        <a href="#contato" data-i18n="navContact">Contato</a>
+      </nav>
+      <div class="header-right">
+        <div class="lang" role="group" aria-label="Idioma / Language">
+          <button class="lang-btn" type="button" data-lang="en" data-active="false">EN</button>
+          <span class="lang-sep">/</span>
+          <button class="lang-btn" type="button" data-lang="pt" data-active="true">PT</button>
+        </div>
+        <a class="btn btn-primary btn-sm" href="#contato" data-i18n="navCta">Vamos conversar</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <section id="topo" class="hero">
+      <div class="hero-glow" aria-hidden="true"></div>
+      <div class="wrap hero-inner">
+        <div class="hero-role">
+          <span class="dot" aria-hidden="true"></span>
+          <span data-i18n="heroRole">Software Engineer & Game Designer · Certificado pela CalArts</span>
+        </div>
+        <h1><span data-i18n="heroH1a">Transformando o impossível em </span><em data-i18n="heroH1b">possível</em>.</h1>
+        <p class="hero-sub" data-i18n="heroSub">Sou Vitor Albert, também conhecido como IceGames. Desenho o jogo e construo a engenharia que o mantém de pé: servidores de Minecraft, eventos ao vivo e software com IA que rodam com centenas de jogadores ao mesmo tempo.</p>
+        <div class="hero-ctas">
+          <a class="btn btn-primary" href="#trabalho" data-i18n="heroCta1">Ver projetos</a>
+          <a class="btn btn-ghost" href="#contato" data-i18n="heroCta2">Vamos conversar</a>
+        </div>
+      </div>
+      <div class="clients">
+        <div class="clients-inner">
+          <span class="clients-label" data-i18n="heroClients">Trabalhei com</span>
+          <div class="clients-mask">
+            <div class="clients-rail" id="clients-rail"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="trabalho" class="section projects" data-reveal>
+      <div class="wrap projects-head section-head">
+        <div>
+          <div class="eyebrow" data-i18n="projEyebrow">Projetos em destaque</div>
+          <h2 class="h2" data-i18n="projTitle">Trabalho recente.</h2>
+        </div>
+        <div class="chips" id="filters" role="group" aria-label="Filtro"></div>
+      </div>
+      <div class="wrap projects-list">
+        <div class="wk" id="projects"></div>
+        <p class="projects-empty" id="projects-empty" hidden data-i18n="projEmpty">Nenhum projeto nesta categoria ainda. Volte em breve.</p>
+      </div>
+    </section>
+
+    <section id="servicos" class="section services" data-reveal>
+      <div class="wrap services-inner">
+        <div class="eyebrow" data-i18n="servEyebrow">O que eu construo</div>
+        <h2 class="h2" data-i18n="servTitle">Do documento de design ao servidor no ar.</h2>
+        <p class="section-sub" data-i18n="servSub">Quatro frentes de trabalho. Cada uma com um projeto entregue que você pode abrir e conferir agora.</p>
+        <div class="two" id="services"></div>
+      </div>
+    </section>
+
+    <section id="sobre" class="section about" data-reveal>
+      <div class="wrap split">
+        <div>
+          <div class="flip-card">
+            <div class="flip">
+              <div class="flip-face flip-front"><img src="assets/vitor-avatar.png" alt="Vitor Albert, IceGames"></div>
+              <div class="flip-face flip-back"><img src="assets/vitor-photo.jpeg" alt="Vitor Albert"></div>
+            </div>
+          </div>
+          <div class="flip-hint">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+            <span data-i18n="aboutHint">passe o mouse</span>
+          </div>
+        </div>
+        <div>
+          <div class="eyebrow" data-i18n="aboutEyebrow">Sobre mim</div>
+          <h2 class="h2" data-i18n="aboutTitle">Quem está por trás do código.</h2>
+          <p class="lead" data-i18n="aboutLead">Sou apaixonado por transformar ideias em realidade.</p>
+          <p class="about-body" data-i18n="aboutBody">Sou Software Engineer e Game Designer, certificado pela CalArts e cursando Sistemas de Informação na UFG. Engenharia de software, gestão de projetos, game design, escrita criativa e marketing raramente andam juntos, e é essa mistura que me deixa levar um projeto do escopo à entrega. Versátil, mas com uma especialidade clara: transformar o impossível em possível.</p>
+          <div class="facts">
+            <div data-i18n="aboutFact1">Certificado CalArts</div>
+            <div data-i18n="aboutFact2">Cursando UFG</div>
+            <div data-i18n="aboutFact3">Bilíngue (PT / EN)</div>
+            <div data-i18n="aboutFact4">Brasil</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section testimonials" data-reveal>
+      <div class="wrap testi-head section-head">
+        <div>
+          <div class="eyebrow" data-i18n="testiEyebrow">Depoimentos</div>
+          <h2 class="h2" data-i18n="testiTitle">O que dizem os clientes.</h2>
+        </div>
+        <div class="testi-hint">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 7 4 12l4 5M16 7l4 5-4 5"/></svg>
+          <span data-i18n="testiDrag">Arraste para navegar</span>
+        </div>
+      </div>
+      <div class="testi-mask" id="testi-rail">
+        <div class="testi-track" id="testimonials"></div>
+      </div>
+    </section>
+
+    <section id="processo" class="section process" data-reveal>
+      <div class="wrap process-inner">
+        <div class="section-head process-head">
+          <div>
+            <div class="eyebrow" data-i18n="procEyebrow">Como eu trabalho</div>
+            <h2 class="h2" data-i18n="procTitle">Sem surpresa no meio do caminho.</h2>
+          </div>
+          <p class="process-sub" data-i18n="procSub">Todo projeto segue o mesmo processo, do primeiro contato ao suporte depois da entrega.</p>
+        </div>
+        <div class="steps" id="steps"></div>
+        <div class="guarantees">
+          <span>✓ <span data-i18n="procG1">Resposta em até 24h</span></span>
+          <span>✓ <span data-i18n="procG2">Escopo e prazo por escrito</span></span>
+          <span>✓ <span data-i18n="procG3">Suporte após a entrega</span></span>
+        </div>
+      </div>
+    </section>
+
+    <section id="contato" class="section contact" data-reveal>
+      <div class="wrap contact-grid">
+        <div>
+          <div class="eyebrow" data-i18n="contactEyebrow">Bora construir algo</div>
+          <h2 class="h2" data-i18n="contactTitle">Tem um projeto em mente?</h2>
+          <p class="contact-sub" data-i18n="contactSub">Servidor de Minecraft, app, integração com IA? Me conta a ideia e eu retorno em até 24h.</p>
+          <div class="links">
+            <a href="https://github.com/IceGames23" target="_blank" rel="noopener">github.com/IceGames23
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a>
+            <a href="https://www.linkedin.com/in/vitor-albert/" target="_blank" rel="noopener">linkedin.com/in/vitor-albert
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></a>
+            <div>Discord <span class="handle">icegames</span></div>
+          </div>
+        </div>
+        <div>
+          <form class="form" id="contact-form" novalidate>
+            <label class="field">
+              <span class="field-label" data-i18n="formName">Nome</span>
+              <input class="input" name="name" type="text" autocomplete="name" placeholder="Como posso te chamar?" data-i18n-placeholder="formNamePh">
+              <span class="field-error" data-error="name"></span>
+            </label>
+            <label class="field">
+              <span class="field-label" data-i18n="formEmail">E-mail</span>
+              <input class="input input-mono" name="email" type="email" autocomplete="email" placeholder="voce@email.com" data-i18n-placeholder="formEmailPh">
+              <span class="field-error" data-error="email"></span>
+            </label>
+            <label class="field">
+              <span class="field-label" data-i18n="formMessage">Mensagem</span>
+              <textarea class="input" name="message" rows="4" placeholder="Me conta sobre o projeto: escopo, prazo, o que você imagina." data-i18n-placeholder="formMsgPh"></textarea>
+              <span class="field-error" data-error="message"></span>
+            </label>
+            <button class="btn btn-primary" type="submit">
+              <span id="submit-label" data-i18n="formSubmit">Enviar mensagem</span>
+              <span class="spinner" id="submit-spinner" hidden aria-hidden="true"></span>
+              <svg id="submit-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </button>
+          </form>
+          <div class="success" id="form-success" hidden>
+            <div class="eyebrow">✓ OK</div>
+            <h3 data-i18n="successTitle">Mensagem enviada!</h3>
+            <p data-i18n="successText">Obrigado pelo contato. Retorno em até 24h, normalmente bem antes disso.</p>
+            <button class="btn-link" type="button" id="form-reset" data-i18n="successAgain">Enviar outra mensagem</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="wrap footer">
+    <span>© <span id="year">2026</span> Vitor Albert · IceGames</span>
+    <span data-i18n="footerTagline">Transformando o impossível em possível.</span>
+    <a href="#topo">↑ Top</a>
+  </footer>
+
+  <div class="overlay overlay-discord" id="discord-modal" hidden role="dialog" aria-modal="true" aria-labelledby="dc-title">
+    <div class="dialog dialog-discord">
+      <div class="dc-eyebrow" data-i18n="dcEyebrow">Falha no envio</div>
+      <h3 class="dc-title" id="dc-title" data-i18n="dcTitle">O formulário não enviou.</h3>
+      <p class="dc-text" data-i18n="dcText">Parece que o sistema de e-mail falhou. Me chama no Discord, minha DM é aberta:</p>
+      <div class="dc-handle">
+        <svg width="23" height="23" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.0766.0766 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c1.8483 1.3568 3.6636 2.1801 5.4494 2.7259a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.198.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.795-.5458 3.6103-1.3691 5.4586-2.7259a.0766.0766 0 00.0312-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg>
+        <span data-i18n="dcHandle">icegames</span>
+      </div>
+      <div class="dc-ask-title" data-i18n="dcAskTitle">No recado, me conta:</div>
+      <ul class="dc-ask" id="dc-ask"></ul>
+      <button class="btn btn-primary" type="button" data-close-discord data-i18n="dcClose">Fechar</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="project-modal" hidden role="dialog" aria-modal="true">
+    <div class="dialog dialog-project"></div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/site.js"></script>
+</body>
+</html>
