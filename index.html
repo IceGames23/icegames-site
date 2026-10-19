@@ -7,6 +7,23 @@
   <meta name="description" content="Software Engineer e Game Designer. Servidores de Minecraft, eventos ao vivo e software com IA que rodam com centenas de jogadores ao mesmo tempo.">
   <meta name="theme-color" content="#0B0B0C">
   <link rel="canonical" href="https://icegames.me/">
+  <link rel="alternate" hreflang="pt-BR" href="https://icegames.me/">
+  <link rel="alternate" hreflang="en" href="https://icegames.me/en/">
+  <link rel="alternate" hreflang="x-default" href="https://icegames.me/">
+  <script id="lang-redirect">
+    /* PT page only (tools/build-en.mjs drops it from /en/): a visitor who chose EN, or a first
+       visit from a non-PT browser, goes to /en/. Crawlers and audits stay, so both pages get indexed. */
+    (function () {
+      try {
+        var saved = localStorage.getItem('ig_lang');
+        var nav = (navigator.language || '').toLowerCase();
+        var bot = /bot|crawl|spider|slurp|preview|lighthouse/i.test(navigator.userAgent);
+        if (saved === 'en' || (!saved && nav && nav.indexOf('pt') !== 0 && !bot)) {
+          location.replace((location.protocol === 'file:' ? 'en/index.html' : 'en/') + location.hash);
+        }
+      } catch (e) { /* storage blocked: stay on PT */ }
+    })();
+  </script>
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://icegames.me/">
   <meta property="og:title" content="Vítor Albert · IceGames · Software Engineer & Game Designer">

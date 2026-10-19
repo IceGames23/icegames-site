@@ -9,13 +9,15 @@ Abrir `index.html` direto no navegador. Funciona em `file://`, não precisa de s
 ## Estrutura
 
 ```
-index.html               marcação e conteúdo estático (meta tags, seções)
+index.html               marcação e conteúdo estático (meta tags, seções), versão PT
+en/index.html            versão EN: GERADA por tools/build-en.mjs, não editar à mão
 css/site.css              todo o estilo
 js/data.js                todo o conteúdo (projetos, textos, depoimentos...)
 js/site.js                comportamento (render, i18n, modais, form, animações)
 assets/                   imagens, vídeos e ícones
 tools/resize-image.ps1    script pra redimensionar imagens grandes
 tools/og-image.html       fonte da imagem de preview do link (assets/og-image.jpg)
+tools/build-en.mjs        gera en/index.html a partir de index.html + STR.en
 _headers                  cache e cabeçalhos de segurança (Cloudflare Pages)
 robots.txt
 sitemap.xml
@@ -60,4 +62,14 @@ Push em `main` publica direto. `_headers` define cache e os cabeçalhos de segur
 
 ## Idiomas
 
-PT e EN alternam na mesma página, sem recarregar. A escolha fica salva no navegador. Na primeira visita, o idioma inicial segue o do navegador.
+Cada idioma tem a sua URL, para o Google indexar os dois: `/` é PT e `/en/` é EN (ligados por `hreflang` e no `sitemap.xml`).
+
+- Os botões PT/EN levam para a outra URL e a escolha fica salva no navegador.
+- Na primeira visita a `/`, um navegador que não está em português vai para `/en/`. Robôs de busca não são redirecionados.
+- `en/index.html` é gerado. **Depois de mexer em `index.html` ou em qualquer texto do `STR`, rodar:**
+
+```
+node tools/build-en.mjs
+```
+
+O script falha se algum texto ficar sem tradução em `STR.en` ou se `index.html` mudar de um jeito que ele não reconhece.
