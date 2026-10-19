@@ -15,7 +15,8 @@ const EN = sandbox.window.IG_DATA.STR.en;
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 
-let html = read('index.html');
+/* LF only: an editor saving CRLF on Windows must not break the exact-match swaps below */
+let html = read('index.html').replace(/\r\n/g, '\n');
 
 /* exact replacements: [from, to]; every one must match */
 const swaps = [
@@ -31,6 +32,7 @@ const swaps = [
   ['aria-label="Seções"', 'aria-label="Sections"'],
   ['aria-label="Foto de Vítor Albert; toque para virar"', 'aria-label="Photo of Vítor Albert; tap to flip"'],
   ['aria-label="Filtro"', 'aria-label="Filter"'],
+  ['https://icegames.me/cv/pt', 'https://icegames.me/cv'],
 ];
 for (const [from, to] of swaps) {
   if (!html.includes(from)) throw new Error('index.html no longer contains:\n  ' + from + '\nUpdate tools/build-en.mjs.');
