@@ -202,20 +202,26 @@
 
   function mediaHtml(m, p, isHero) {
     var alt = esc(p.title);
+    /* gallery images sit below the fold of the dialog: let the browser defer them */
+    var lazy = isHero ? '' : ' loading="lazy" decoding="async"';
+    var cap = (!isHero && m.caption) ? '<span class="media-caption">' + esc(L(m.caption)) + '</span>' : '';
     if (m.type === 'youtube') {
       return '<a class="yt" href="https://www.youtube.com/watch?v=' + esc(m.yt) + '" target="_blank" rel="noopener">' +
-        '<img src="https://i.ytimg.com/vi/' + esc(m.yt) + '/maxresdefault.jpg" alt="' + alt + '">' +
+        '<img src="https://i.ytimg.com/vi/' + esc(m.yt) + '/maxresdefault.jpg" alt="' + alt + '"' + lazy + '>' +
         '<span class="yt-badge"><span>▶ YouTube</span></span></a>';
     }
     if (m.type === 'file') {
       return '<video src="' + esc(m.src) + '" controls playsinline preload="metadata"></video>';
     }
+    if (m.type === 'loop') {
+      /* a GIF re-encoded as mp4: muted is what lets the browser autoplay it */
+      return '<video src="' + esc(m.src) + '" autoplay loop muted playsinline aria-label="' + alt + '"></video>' + cap;
+    }
     if (m.type === 'scroll') {
-      var cap = (!isHero && m.caption) ? '<span class="media-caption">' + esc(L(m.caption)) + '</span>' : '';
-      return '<div class="scrollbox"><img src="' + esc(m.src) + '" alt="' + alt + '"></div>' + cap;
+      return '<div class="scrollbox"><img src="' + esc(m.src) + '" alt="' + alt + '"' + lazy + '></div>' + cap;
     }
     /* image */
-    return '<img class="media-img" src="' + esc(m.src) + '" alt="' + alt + '" style="aspect-ratio:' + esc(m.aspect || '16 / 9') + '">';
+    return '<img class="media-img" src="' + esc(m.src) + '" alt="' + alt + '" style="aspect-ratio:' + esc(m.aspect || '16 / 9') + '"' + lazy + '>';
   }
 
   function renderModal() {
@@ -366,10 +372,20 @@
   function initSplash() {
     var el = $('#splash');
     var done = false;
-    var finish = function () { if (done) return; done = true; el.setAttribute('data-hide', 'true'); };
-    if (document.readyState === 'complete') setTimeout(finish, 450);
+    /* never hide before the mark has finished drawing itself in (css .splash-mark: .1s delay + 1s) */
+    var shownAt = performance.now();
+    var finish = function () {
+      if (done) return;
+      var wait = 1150 - (performance.now() - shownAt);
+      if (wait > 0 && !reduceMotion) { setTimeout(finish, wait); return; }
+      done = true; el.setAttribute('data-hide', 'true');
+    };
+    /* the splash only has to cover the font swap, so wait for the fonts, not for
+       window 'load' (which also waits on every image below the fold) */
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { setTimeout(finish, 350); });
+    else if (document.readyState === 'complete') setTimeout(finish, 450);
     else window.addEventListener('load', function () { setTimeout(finish, 350); });
-    setTimeout(finish, 2600);   /* fallback if load stalls (fonts, video metadata) */
+    setTimeout(finish, 2600);   /* fallback if the font request stalls */
   }
 
   /* ---------- reveal ---------- */
@@ -391,7 +407,23 @@
     var ctx = cv.getContext('2d');
     var dpr = Math.min(window.devicePixelRatio || 1, 2);
     var accent = getComputedStyle(document.documentElement).getPropertyValue('--ac').trim() || '#6ED4F2';
-    var w = 0, h = 0, flakes = [];
+    var w = 0, h = 0, flakes = [], marks = [];
+    /* a few big flakes shaped like the IceGames mark, drawn from the page's #ig-mark symbol
+       (its viewBox is centered on 500,500 and ~717 units tall) */
+    var MARK = window.Path2D ? $$('#ig-mark path').map(function (p) { return new Path2D(p.getAttribute('d')); }) : [];
+    var newMark = function (y) {
+      return {
+        x: Math.random() * w,
+        y: y,
+        size: 14 + Math.random() * 10,
+        vy: 12 + Math.random() * 14,
+        drift: 10 + Math.random() * 18,
+        phase: Math.random() * Math.PI * 2,
+        rot: Math.random() * Math.PI,
+        vr: (Math.random() < 0.5 ? -1 : 1) * (0.2 + Math.random() * 0.35),
+        a: 0.35 + Math.random() * 0.25,
+      };
+    };
 
     var resize = function () {
       w = cv.clientWidth; h = cv.clientHeight;
@@ -410,6 +442,9 @@
           a: 0.18 + Math.random() * 0.5,
         });
       }
+      marks = [];
+      var markCount = MARK.length ? (w < 700 ? 2 : 3) : 0;
+      for (var j = 0; j < markCount; j++) marks.push(newMark(Math.random() * h));
     };
     resize();
     window.addEventListener('resize', resize);
@@ -417,7 +452,10 @@
     var t0 = performance.now(), last = t0;
     var draw = function (now) {
       if (cv.clientWidth !== w || cv.clientHeight !== h) resize();
-      if (!w || !h) { requestAnimationFrame(draw); return; }
+      /* overlays blur the page behind them (backdrop-filter): a moving canvas under
+         that blur forces a full-screen re-blur every frame, so freeze while one is open */
+      var covered = state.modalId || state.discordOpen || state.menuOpen;
+      if (!w || !h || covered) { last = now; requestAnimationFrame(draw); return; }
       var dt = Math.min(0.05, (now - last) / 1000);
       last = now;
       var life = (now - t0) / 1000;
@@ -435,6 +473,28 @@
         ctx.globalAlpha = f.a * Math.min(1, 0.45 + gust * 0.25);
         ctx.fillStyle = f.s > 2 ? accent : '#F4F1EA';
         ctx.fillRect(Math.round(f.x), Math.round(f.y), f.s, f.s);
+      }
+      ctx.strokeStyle = accent;
+      ctx.lineCap = ctx.lineJoin = 'round';
+      for (var m = 0; m < marks.length; m++) {
+        var k = marks[m];
+        k.phase += dt * 0.8;
+        k.rot += k.vr * dt;
+        k.y += k.vy * gust * dt;
+        k.x += (Math.sin(k.phase) * k.drift + 26 * (gust - 1)) * dt;
+        if (k.y - k.size > h) { marks[m] = k = newMark(-k.size); }
+        if (k.x > w + k.size) k.x = -k.size;
+        if (k.x < -k.size) k.x = w + k.size;
+        var sc = k.size / 717;
+        ctx.save();
+        ctx.translate(k.x, k.y);
+        ctx.rotate(k.rot);
+        ctx.scale(sc, sc);
+        ctx.translate(-500, -500);
+        ctx.lineWidth = 1.4 / sc;
+        ctx.globalAlpha = k.a * Math.min(1, 0.45 + gust * 0.25);
+        for (var q = 0; q < MARK.length; q++) ctx.stroke(MARK[q]);
+        ctx.restore();
       }
       ctx.globalAlpha = 1;
       requestAnimationFrame(draw);
@@ -471,9 +531,15 @@
     var touch = !!(window.matchMedia && window.matchMedia('(hover: none)').matches);
     var speed = touch ? 48 : 30;
     var last = 0;
+    /* off-screen the rail stands still: no point scrolling (and repainting) what nobody sees */
+    var onscreen = true;
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) { onscreen = entries[0].isIntersecting; }).observe(el);
+    }
     var loop = function (now) {
       var dt = last ? Math.min(0.05, (now - last) / 1000) : 0;
       last = now;
+      if (!onscreen && !drag) { requestAnimationFrame(loop); return; }
       if (!reduceMotion && !paused && !drag && now > resume) {
         /* a whole-pixel gap means the user (or wrap) moved the rail: follow it */
         if (Math.abs(el.scrollLeft - pos) >= 1) pos = el.scrollLeft;

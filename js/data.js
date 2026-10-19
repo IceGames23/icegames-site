@@ -9,7 +9,8 @@ window.IG_DATA = {
      "Minecraft" | "Game Design" | "IA / Software"
      media[0] is the modal hero; the rest is the gallery.
      media types: file (mp4 in assets/) | youtube (yt: video id) |
-                  scroll (tall screenshot, scrollable) | image (aspect: "w / h") */
+                  scroll (tall screenshot, scrollable) | image (aspect: "w / h") |
+                  loop (short silent mp4 that autoplays like a GIF) */
   PROJECTS: [
     {
       id: "afterlands", category: "Minecraft", title: "AfterLands", label: "Minecraft / Website", year: { pt: "2023 - hoje", en: "2023 - present" },
@@ -19,7 +20,7 @@ window.IG_DATA = {
       link: { url: "https://www.afterlands.com", label: { pt: "Ver o site", en: "Visit website" } },
       media: [
         { type: "file", src: "assets/afterlands-cinematic.mp4" },
-        { type: "scroll", src: "assets/afterlands-site.jpg", caption: { pt: "Site oficial do AfterLands · role para ver a página inteira", en: "AfterLands official website · scroll to see the full page" } },
+        { type: "scroll", src: "assets/afterlands-site.webp", caption: { pt: "Site oficial do AfterLands · role para ver a página inteira", en: "AfterLands official website · scroll to see the full page" } },
         { type: "file", src: "assets/afterlands-circuit.mp4" },
         { type: "file", src: "assets/afterlands-bus.mp4" },
       ],
@@ -47,7 +48,7 @@ window.IG_DATA = {
       short: { pt: "Bot de Discord com RAG que responde jogadores e clientes automaticamente, 24 horas por dia.", en: "Discord bot with RAG that answers players and clients automatically, around the clock." },
       long: { pt: "Bot de Discord em Python (Pycord) com uma camada de IA de verdade por trás: as respostas vêm de RAG sobre um banco de dados com as informações do servidor, então o bot responde com o conteúdo real do projeto em vez de improvisar. Ele atende mensagens diretas, identifica sozinho quando uma dúvida já está no FAQ e escala para humanos quando não está. Junto vêm os sistemas que mantêm a comunidade em pé: leveling, moderação e formulários em modals.", en: "A Python (Pycord) Discord bot with a real AI layer behind it: answers come from RAG over a database of server information, so the bot replies with the project's actual content instead of improvising. It handles direct messages, recognizes on its own when a question is already covered by the FAQ, and escalates to a human when it isn't. Alongside come the systems that keep a community running: leveling, moderation and modal-based forms." },
       tags: ["Python", "Pycord", "RAG", "LLMs"],
-      media: [{ type: "scroll", src: "assets/cortex-demo.png", caption: { pt: "Resposta do CORTEX no Discord, com contexto buscado via RAG", en: "CORTEX answering in Discord, with context retrieved via RAG" } }],
+      media: [{ type: "scroll", src: "assets/cortex-demo.webp", caption: { pt: "Resposta do CORTEX no Discord, com contexto buscado via RAG", en: "CORTEX answering in Discord, with context retrieved via RAG" } }],
       metrics: [{ value: "24/7", label: { pt: "Atendimento", en: "Coverage" } }, { value: "RAG", label: { pt: "Respostas com fonte", en: "Sourced answers" } }, { value: "DM + FAQ", label: { pt: "Canais", en: "Channels" } }],
     },
     {
@@ -64,7 +65,7 @@ window.IG_DATA = {
       long: { pt: "Plugin publicado no Spigot que resolve um problema chato de verdade: deixar um servidor de Minecraft multilíngue sem reescrever cada mensagem na mão. Configuração direta, troca de idioma por jogador e uma versão premium integrada ao Crowdin, a maior plataforma de tradução do mundo, para que equipes traduzam o servidor de forma profissional e contínua. Produto mantido, documentado e com suporte a donos de servidor.", en: "A plugin published on Spigot that solves a genuinely tedious problem: making a Minecraft server multilingual without rewriting every message by hand. Straightforward setup, per-player language switching, and a premium version integrated with Crowdin, the world's largest translation platform, so teams can localize a server professionally and continuously. A maintained, documented product with support for server owners." },
       tags: ["Java", "Spigot", "Crowdin", "i18n"],
       link: { url: "https://www.spigotmc.org/resources/iglanguages-the-multi-language-plugin-1-8-1-21.125318/", label: { pt: "Ver na SpigotMC", en: "View on SpigotMC" } },
-      media: [{ type: "scroll", src: "assets/iglanguages-demo.gif", caption: { pt: "Troca de idioma em tempo real, sem reiniciar o servidor", en: "Real-time language switching, no server restart" } }],
+      media: [{ type: "loop", src: "assets/iglanguages-demo.mp4", caption: { pt: "Troca de idioma em tempo real, sem reiniciar o servidor", en: "Real-time language switching, no server restart" } }],
       metrics: [{ value: "Spigot", label: { pt: "Publicado", en: "Published" } }, { value: "Crowdin", label: { pt: "Integração premium", en: "Premium integration" } }, { value: "Multi", label: { pt: "Idiomas", en: "Languages" } }],
     },
   ],
@@ -89,12 +90,12 @@ window.IG_DATA = {
 
   /* Logos in the hero marquee. w/h are the box the logo is fitted into. href "" = not a link */
   CLIENTS: [
-    { id: "client-soggy",      name: "Soggy",         src: "assets/client-soggy.jpg",      w: "78px",  h: "78px",  href: "https://www.youtube.com/@savvysoggy" },
-    { id: "client-afterlands", name: "AfterLands",    src: "assets/client-afterlands.png", w: "270px", h: "72px",  href: "https://www.afterlands.com" },
-    { id: "client-tabiquest",  name: "TabiQuest",     src: "assets/client-tabiquest.png",  w: "110px", h: "110px", href: "" },
-    { id: "client-mia",        name: "Mia Studios",   src: "assets/client-mia.png",        w: "212px", h: "72px",  href: "https://www.mia-studios.net" },
-    { id: "client-panda",      name: "Panda Studios", src: "assets/client-panda.png",      w: "92px",  h: "84px",  href: "https://www.panda-studios.net/" },
-    { id: "client-eco",        name: "Eco Studios",   src: "assets/client-eco.png",        w: "206px", h: "72px",  href: "https://www.ecostudios.com.br/" },
+    { id: "client-soggy",      name: "Soggy",         src: "assets/client-soggy.webp",      w: "78px",  h: "78px",  href: "https://www.youtube.com/@savvysoggy" },
+    { id: "client-afterlands", name: "AfterLands",    src: "assets/client-afterlands.webp", w: "270px", h: "72px",  href: "https://www.afterlands.com" },
+    { id: "client-tabiquest",  name: "TabiQuest",     src: "assets/client-tabiquest.webp",  w: "110px", h: "110px", href: "" },
+    { id: "client-mia",        name: "Mia Studios",   src: "assets/client-mia.webp",        w: "212px", h: "72px",  href: "https://www.mia-studios.net" },
+    { id: "client-panda",      name: "Panda Studios", src: "assets/client-panda.webp",      w: "92px",  h: "84px",  href: "https://www.panda-studios.net/" },
+    { id: "client-eco",        name: "Eco Studios",   src: "assets/client-eco.webp",        w: "206px", h: "72px",  href: "https://www.ecostudios.com.br/" },
   ],
 
   /* Services: n selects STR keys serv{n}Title/Model/Promise/Desc; proof = project id opened by "See the proof" */

@@ -1,15 +1,13 @@
-<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <linearGradient id="favGrad" x1="14" y1="10" x2="50" y2="54" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#38bdf8"></stop>
-      <stop offset="1" stop-color="#06b6d4"></stop>
-    </linearGradient>
-  </defs>
-  <rect width="64" height="64" rx="14" fill="#0f172a"></rect>
-  <g stroke="url(#favGrad)" stroke-width="3.4" stroke-linecap="round">
-    <line x1="32" y1="16" x2="32" y2="48"></line>
-    <line x1="18" y1="24" x2="46" y2="40"></line>
-    <line x1="18" y1="40" x2="46" y2="24"></line>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="14" fill="#0B0B0C"/>
+  <!-- icegames-icon.svg, scaled into the tile with a heavier stroke so it survives 16px -->
+  <g transform="translate(11.2 7.6) scale(0.0678) translate(-189.3 -141.81)" fill="none" stroke="#6ED4F2" stroke-width="40" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M500,147V856M805,678,193,324M807.4,322.84,193.4,677.34"/>
+    <path d="M495.46,851.35l-102.3-58.61a7.89,7.89,0,0,1-.05-13.88l102.33-59.63a9.14,9.14,0,0,1,9.2,0l100.41,59.1a7.9,7.9,0,0,1,0,13.82L504.61,851.3A9.2,9.2,0,0,1,495.46,851.35Z"/>
+    <path d="M801,677.73,699,737a7.89,7.89,0,0,1-12-6.89l-.48-118.44a9.18,9.18,0,0,1,4.62-8l101.39-57.4a7.89,7.89,0,0,1,12,6.9l1,116.56A9.18,9.18,0,0,1,801,677.73Z"/>
+    <path d="M495.4,281.17,393.1,222.56a7.91,7.91,0,0,1-.06-13.89L495.38,149a9.19,9.19,0,0,1,9.2,0L605,208.17A7.89,7.89,0,0,1,605,222L504.54,281.11A9.15,9.15,0,0,1,495.4,281.17Z"/>
+    <path d="M309.73,395.19l-101.9,59.28a7.9,7.9,0,0,1-12.06-6.89l-.47-118.44a9.19,9.19,0,0,1,4.62-8l101.39-57.4a7.9,7.9,0,0,1,12,6.91l1,116.55A9.16,9.16,0,0,1,309.73,395.19Z"/>
+    <path d="M310,606.73l-101.9-59.29A7.89,7.89,0,0,0,196,554.33l-.48,118.44a9.17,9.17,0,0,0,4.62,8l101.39,57.4a7.89,7.89,0,0,0,12-6.9l1-116.56A9.14,9.14,0,0,0,310,606.73Z"/>
+    <path d="M801,320.73l-101.9-59.29A7.89,7.89,0,0,0,687,268.33l-.48,118.44a9.17,9.17,0,0,0,4.62,8l101.39,57.4a7.89,7.89,0,0,0,12-6.9l1-116.56A9.14,9.14,0,0,0,801,320.73Z"/>
   </g>
-  <circle cx="32" cy="32" r="4" fill="url(#favGrad)"></circle>
 </svg>

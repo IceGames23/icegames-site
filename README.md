@@ -15,6 +15,7 @@ js/data.js                todo o conteúdo (projetos, textos, depoimentos...)
 js/site.js                comportamento (render, i18n, modais, form, animações)
 assets/                   imagens, vídeos e ícones
 tools/resize-image.ps1    script pra redimensionar imagens grandes
+tools/og-image.html       fonte da imagem de preview do link (assets/og-image.jpg)
 _headers                  cache e cabeçalhos de segurança (Cloudflare Pages)
 robots.txt
 sitemap.xml
@@ -28,6 +29,7 @@ Tudo que é texto ou lista está em `js/data.js`:
   - `file`: vídeo local (mp4)
   - `youtube`: thumbnail com link pro YouTube (`yt: "VIDEO_ID"`)
   - `scroll`: captura alta, rolável, com `caption { pt, en }`
+  - `loop`: mp4 curto e sem som que toca sozinho em loop, como um GIF (GIFs viram mp4: são ~6x menores)
   - `image`: imagem simples, com `aspect: "w / h"`
 - `TESTIMONIALS`: depoimentos.
 - `CLIENTS`: logos do carrossel. `w`/`h` é a caixa em que o logo é encaixado; `href: ""` quando não tem link.
@@ -37,7 +39,7 @@ Tudo que é texto ou lista está em `js/data.js`:
 
 ## Imagens
 
-Novas imagens vão em `assets/`. Se forem grandes, reduzo com:
+Novas imagens vão em `assets/`, de preferência em WebP (`ffmpeg -i foto.png -c:v libwebp -quality 85 foto.webp`). Se forem grandes, reduzo com:
 
 ```
 .\tools\resize-image.ps1 -Path assets\arquivo.png -MaxWidth 540 -MaxHeight 144

@@ -11,13 +11,16 @@
   <meta property="og:url" content="https://icegames.me/">
   <meta property="og:title" content="Vítor Albert · IceGames · Software Engineer & Game Designer">
   <meta property="og:description" content="Servidores de Minecraft, eventos ao vivo e software com IA que rodam com centenas de jogadores ao mesmo tempo.">
-  <meta property="og:image" content="https://icegames.me/assets/vitor-avatar.jpg">
+  <meta property="og:image" content="https://icegames.me/assets/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="IceGames: Vítor Albert, Software Engineer & Game Designer">
   <meta property="og:locale" content="pt_BR">
   <meta property="og:locale:alternate" content="en_US">
-  <meta name="twitter:card" content="summary">
+  <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Vítor Albert · IceGames">
   <meta name="twitter:description" content="Software Engineer & Game Designer. Minecraft servers, live events and AI-powered software.">
-  <meta name="twitter:image" content="https://icegames.me/assets/vitor-avatar.jpg">
+  <meta name="twitter:image" content="https://icegames.me/assets/og-image.jpg">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -34,6 +37,8 @@
   }
   </script>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -41,16 +46,24 @@
 </head>
 <body>
 
+  <!-- IceGames mark (source: icegames-icon.svg), used via <use href="#ig-mark">; the snow canvas reads these paths too.
+       Styling (stroke, width) comes from the referencing <svg>; pathLength="1" lets the splash draw it in. -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="ig-mark" viewBox="189.3 141.81 622.22 716.73"><path pathLength="1" d="M500,147V856M805,678,193,324M807.4,322.84,193.4,677.34"/><path pathLength="1" d="M495.46,851.35l-102.3-58.61a7.89,7.89,0,0,1-.05-13.88l102.33-59.63a9.14,9.14,0,0,1,9.2,0l100.41,59.1a7.9,7.9,0,0,1,0,13.82L504.61,851.3A9.2,9.2,0,0,1,495.46,851.35Z"/><path pathLength="1" d="M801,677.73,699,737a7.89,7.89,0,0,1-12-6.89l-.48-118.44a9.18,9.18,0,0,1,4.62-8l101.39-57.4a7.89,7.89,0,0,1,12,6.9l1,116.56A9.18,9.18,0,0,1,801,677.73Z"/><path pathLength="1" d="M495.4,281.17,393.1,222.56a7.91,7.91,0,0,1-.06-13.89L495.38,149a9.19,9.19,0,0,1,9.2,0L605,208.17A7.89,7.89,0,0,1,605,222L504.54,281.11A9.15,9.15,0,0,1,495.4,281.17Z"/><path pathLength="1" d="M309.73,395.19l-101.9,59.28a7.9,7.9,0,0,1-12.06-6.89l-.47-118.44a9.19,9.19,0,0,1,4.62-8l101.39-57.4a7.9,7.9,0,0,1,12,6.91l1,116.55A9.16,9.16,0,0,1,309.73,395.19Z"/><path pathLength="1" d="M310,606.73l-101.9-59.29A7.89,7.89,0,0,0,196,554.33l-.48,118.44a9.17,9.17,0,0,0,4.62,8l101.39,57.4a7.89,7.89,0,0,0,12-6.9l1-116.56A9.14,9.14,0,0,0,310,606.73Z"/><path pathLength="1" d="M801,320.73l-101.9-59.29A7.89,7.89,0,0,0,687,268.33l-.48,118.44a9.17,9.17,0,0,0,4.62,8l101.39,57.4a7.89,7.89,0,0,0,12-6.9l1-116.56A9.14,9.14,0,0,0,801,320.73Z"/></symbol>
+  </svg>
+
   <div class="splash" id="splash" aria-hidden="true">
-    <span class="splash-logo">IceGames</span>
-    <span class="splash-bar"><span></span></span>
+    <svg class="splash-mark" viewBox="0 0 622.22 716.73" aria-hidden="true"><use href="#ig-mark"/></svg>
   </div>
 
   <canvas class="snow" id="snow" aria-hidden="true"></canvas>
 
   <header class="header">
     <div class="wrap header-inner">
-      <a class="brand" href="#topo">ICEGAMES.ME</a>
+      <a class="brand" href="#topo">
+        <svg class="brand-mark" viewBox="0 0 622.22 716.73" aria-hidden="true"><use href="#ig-mark"/></svg>
+        ICEGAMES.ME
+      </a>
       <nav class="nav" aria-label="Seções">
         <a href="#trabalho" data-i18n="navProjects">Projetos</a>
         <a href="#servicos" data-i18n="navServices">Serviços</a>
@@ -144,8 +157,8 @@
         <div>
           <div class="flip-card" role="button" tabindex="0" data-flipped="false" aria-label="Foto de Vítor Albert; toque para virar">
             <div class="flip">
-              <div class="flip-face flip-front"><img src="assets/vitor-avatar.jpg" alt="Vítor Albert, IceGames"></div>
-              <div class="flip-face flip-back"><img src="assets/vitor-photo.jpg" alt="Vítor Albert"></div>
+              <div class="flip-face flip-front"><img src="assets/vitor-avatar.webp" alt="Vítor Albert, IceGames" width="840" height="840" loading="lazy" decoding="async"></div>
+              <div class="flip-face flip-back"><img src="assets/vitor-photo.webp" alt="Vítor Albert" width="840" height="840" loading="lazy" decoding="async"></div>
             </div>
           </div>
           <div class="flip-hint">
