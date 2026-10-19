@@ -14,11 +14,13 @@ en/index.html            versão EN: GERADA por tools/build-en.mjs, não editar 
 css/site.css              todo o estilo
 js/data.js                todo o conteúdo (projetos, textos, depoimentos...)
 js/site.js                comportamento (render, i18n, modais, form, animações)
-assets/                   imagens, vídeos e ícones
+assets/                   imagens, vídeos e ícones (cache de 7 dias)
+files/                    PDFs do currículo, gerados pelo projeto cv (cache de 1 hora)
 tools/resize-image.ps1    script pra redimensionar imagens grandes
 tools/og-image.html       fonte da imagem de preview do link (assets/og-image.jpg)
 tools/build-en.mjs        gera en/index.html a partir de index.html + STR.en
 _headers                  cache e cabeçalhos de segurança (Cloudflare Pages)
+_redirects                /cv e /cv/pt apontam para os PDFs em files/
 robots.txt
 sitemap.xml
 ```
@@ -49,6 +51,34 @@ Novas imagens vão em `assets/`, de preferência em WebP (`ffmpeg -i foto.png -c
 
 Uso mais ou menos 2x o tamanho em que a imagem aparece na tela.
 
+## Ícone
+
+O desenho do ícone fica uma vez só no `index.html`, como `<symbol id="ig-mark">`. O cabeçalho e a tela de abertura usam ele com `<use href="#ig-mark">`, e a neve lê os mesmos traços. Para mudar o ícone, troco os `<path>` desse symbol.
+
+Arquivos separados que não leem o symbol:
+
+- `assets/favicon.svg`, com a versão PNG em `favicon-32.png` e `apple-touch-icon.png`
+- `assets/og-image.jpg`, a imagem de preview do link, cuja fonte é `tools/og-image.html`
+
+Se o ícone mudar, esses arquivos precisam ser refeitos à mão.
+
+## Currículo
+
+O currículo é feito em LaTeX num projeto privado à parte, `..\cv`, que tem o próprio README. Para atualizar:
+
+1. Edito `cv-en.tex` e/ou `cv-pt.tex` nesse projeto.
+2. Lá dentro, rodo `.\build.ps1 -Publish`. Ele confere se cada PDF tem 1 página e texto legível por ATS, e copia os PDFs para `files/`.
+3. Faço commit e push deste site.
+
+Endereços:
+
+- `icegames.me/cv` abre o PDF em inglês.
+- `icegames.me/cv/pt` abre o PDF em português.
+
+O link aparece em "Currículo (PDF)" nos contatos e em "CV" no rodapé.
+
+O portfólio e o currículo precisam contar a mesma história. Se um número ou fato mudar num, mudo no outro.
+
 ## Deploy
 
 Cloudflare Pages conectado ao repositório no GitHub:
@@ -59,6 +89,21 @@ Cloudflare Pages conectado ao repositório no GitHub:
 - Domínio: `icegames.me`
 
 Push em `main` publica direto. `_headers` define cache e os cabeçalhos de segurança.
+
+## Visitas e Google
+
+- **Visitas:** Cloudflare Web Analytics, ativado no painel do Pages (Metrics → Web Analytics). Não usa cookies. A Cloudflare injeta o script no deploy, então não há nada no código.
+- **Google:** o domínio está no Google Search Console, com o `sitemap.xml` enviado. É lá que vejo indexação e buscas.
+
+## E-mail
+
+`vitor@icegames.me` é encaminhado para o Gmail pelo Cloudflare Email Routing. Respondo por esse endereço usando o "Enviar e-mail como" do Gmail, com a senha de app e `smtp.gmail.com`.
+
+O registro SPF do domínio autoriza a Cloudflare e o Google:
+
+```
+v=spf1 include:_spf.mx.cloudflare.net include:_spf.google.com ~all
+```
 
 ## Idiomas
 
